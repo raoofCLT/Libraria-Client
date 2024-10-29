@@ -15,11 +15,13 @@ import {
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import authScreenAtom from "../atoms/authScreenAtom";
 
 const SignupPage = () => {
   const [showPassword,setShowPassword] = useState(false)
-  const navigate = useNavigate()
+const setAuthScreen = useSetRecoilState(authScreenAtom)
+const [loading, setLoading] = useState(false)
 const [inputs, setInputs] = useState({
   name:"",
   username:"",
@@ -32,6 +34,7 @@ const togglePassword = () => {
 }
 
   const handleSignup = async () => {
+    setLoading(true)
     try {
       const res = await fetch("/api/users/signup", {
         method: "POST",
@@ -46,14 +49,16 @@ const togglePassword = () => {
         return;
       }
       console.log("Signup successful:", data)
-      navigate("/")
+      localStorage.setItem("user-library",JSON.stringify(data))
     } catch (error) {
       console.log("Error in handleSignup:", error);
+    }finally{
+      setLoading(false)
     }
   };
 
   return (
-    <Flex align="center" justify="center" height="100vh" w="100%">
+    <Flex align="center" justify="center" height="90vh" w="100%">
       <Flex
         width={{ base: "90%", md: "70%", lg: "60%" }}
         height="auto"
@@ -195,6 +200,7 @@ const togglePassword = () => {
               }}
               type="submit"
               onClick={handleSignup}
+              isLoading={loading}
             >
               Signup
             </Button>
@@ -203,7 +209,7 @@ const togglePassword = () => {
                 Already a user{" "}
                 <Link
                   color={"blue.400"}
-                  onClick={() => navigate("/login")}
+                  onClick={() => setAuthScreen("login")}
                 >
                   Login
                 </Link>

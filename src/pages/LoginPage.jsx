@@ -12,44 +12,54 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useSetRecoilState } from "recoil";
+import userAtom from "../atoms/userAtom";
+import authScreenAtom from "../atoms/authScreenAtom";
 
 const LoginPage = () => {
-  const [showPassword,setShowPassword] = useState(false)
-  const navigate = useNavigate()
+  const [showPassword, setShowPassword] = useState(false);
+  const setAuthScreen = useSetRecoilState(authScreenAtom);
+  const setUser = useSetRecoilState(userAtom);
+  const [loading, setLoading] = useState(false)
   const [inputs, setInputs] = useState({
-    username:"",
+    username: "",
     password: "",
-  })
+  });
+
+
 
   const togglePassword = () => {
-    setShowPassword(!showPassword)
-  }
+    setShowPassword(!showPassword);
+  };
 
   const handleLogin = async () => {
-    try{
-      const res= await fetch("/api/users/login",{
-        method:"POST",
+    setLoading(true)
+    try {
+      const res = await fetch("/api/users/login", {
+        method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(inputs),
-      })
-      const data = await res.json()
-      if(data.error){
-        console.log("Error in data:", data.error)
+      });
+      const data = await res.json();
+      if (data.error) {
+        console.log("Error in data:", data.error);
         return;
       }
-      console.log("Login successful:", data)
-      navigate("/")
-    }catch (error){
+      localStorage.setItem("user-library", JSON.stringify(data));
+      console.log("Login successful:", data);
+      setUser(data);
+    } catch (error) {
       console.log("Error in handleLogin:", error);
+    }finally{
+      setLoading(false)
     }
   };
 
   return (
-    <Flex align="center" justify="center" height="100vh" w="100%">
+    <Flex align="center" justify="center" height="90vh" w="100%">
       <Flex
         width={{ base: "90%", md: "70%", lg: "60%" }}
         height="70vh"
@@ -116,7 +126,9 @@ const LoginPage = () => {
                     borderColor: "red.400",
                     boxShadow: "0 0 0 1px red.400",
                   }}
-                  onChange={(e)=> setInputs({...inputs,username:e.target.value})}
+                  onChange={(e) =>
+                    setInputs({ ...inputs, username: e.target.value })
+                  }
                   value={inputs.username}
                 />
               </FormControl>
@@ -135,12 +147,18 @@ const LoginPage = () => {
                       borderColor: "red.400",
                       boxShadow: "0 0 0 1px red.400",
                     }}
-                    onChange={(e)=> setInputs({...inputs,password:e.target.value})}
+                    onChange={(e) =>
+                      setInputs({ ...inputs, password: e.target.value })
+                    }
                     value={inputs.password}
                   />
                   <InputRightElement h={"full"}>
-                  <Button variant={"ghost"} onClick={togglePassword}>
-                      {showPassword ? <ViewIcon color={"gray"} /> :<ViewOffIcon color={"gray"} />}
+                    <Button variant={"ghost"} onClick={togglePassword}>
+                      {showPassword ? (
+                        <ViewIcon color={"gray"} />
+                      ) : (
+                        <ViewOffIcon color={"gray"} />
+                      )}
                     </Button>
                   </InputRightElement>
                 </InputGroup>
@@ -159,6 +177,7 @@ const LoginPage = () => {
               }}
               type="submit"
               onClick={handleLogin}
+              isLoading={loading}
             >
               Login
             </Button>
@@ -167,7 +186,7 @@ const LoginPage = () => {
                 Don&apos;t have an account?{" "}
                 <Link
                   color={"blue.400"}
-                  onClick={() => navigate("/signup")}
+                  onClick={() => setAuthScreen("signup")}
                 >
                   Sign up
                 </Link>
