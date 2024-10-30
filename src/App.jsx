@@ -9,6 +9,8 @@ import Navbar from "./components/Navbar";
 // import userAtom from "./atoms/userAtom";
 import HomePage from "./pages/HomePage";
 import BookPage from "./pages/BookPage";
+import UserPage from "./pages/userPage";
+import Dashboard from "./pages/Dashboard";
 // import AuthPage from "./pages/AuthPage";
 
 function App() {
@@ -30,6 +32,8 @@ function App() {
           /> */}
           <Route path="/" element={<HomePage />} />
           <Route path="/book" element={<BookPage />} />
+          <Route path="/user" element={<UserPage />} />
+          <Route path="/admin" element={<Dashboard />} />
         </Routes>
       </Router>
     </>
