@@ -39,17 +39,18 @@ const UserPage = () => {
   ];
   return (
     <Flex>
-        <Flex width={"70%"} p={10} gap={6}>
+        <Flex width={"70%"} p={10 } gap={6}>
       {books.map((book)=> (
-        <Card  key={book.bookId} w={"200px"} boxShadow="lg">
-          <CardBody>
+        <Card  key={book.bookId} w={"200px"} p={{ base: "", md: "2" }} boxShadow="lg">
+          <CardBody >
             <Image
               src={book.coverPage || "https://via.placeholder.com/150"}
               alt={book.title || "Book cover"}
               borderRadius="md"
               mb={4}
               objectFit="cover"
-              height="250px"
+              justifySelf={"center"}
+              h={{ base: "150px", md: "250px" }}
             />
             <Heading size="xs" color={"gray.500"}>
               {book.title}
@@ -57,7 +58,7 @@ const UserPage = () => {
             <Text mt={1} >21-5-2025</Text>
             <Text color={"red"}>2 days</Text>
           </CardBody>
-        <Button mb={2} mx={2} width={"92%"}>
+        <Button mb={2} mx={2} width={{ base: "85%", md: "92%" }}>
           CHECK OUT
         </Button>
         </Card>

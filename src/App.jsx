@@ -11,6 +11,7 @@ import HomePage from "./pages/HomePage";
 import BookPage from "./pages/BookPage";
 import UserPage from "./pages/userPage";
 import Dashboard from "./pages/Dashboard";
+// import Sidebar from "./components/sidebar";
 // import AuthPage from "./pages/AuthPage";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
     <>
       {/* {user && <Navbar />} */}
       <Navbar />
+      {/* <Sidebar/> */}
       <Router>
         <Routes>
           {/* <Route
