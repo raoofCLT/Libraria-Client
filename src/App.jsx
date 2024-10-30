@@ -2,31 +2,34 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Navigate,
+  // Navigate,
 } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import { useRecoilValue } from "recoil";
-import userAtom from "./atoms/userAtom";
+// import { useRecoilValue } from "recoil";
+// import userAtom from "./atoms/userAtom";
 import HomePage from "./pages/HomePage";
-import AuthPage from "./pages/AuthPage";
+import BookPage from "./pages/BookPage";
+// import AuthPage from "./pages/AuthPage";
 
 function App() {
-  const user = useRecoilValue(userAtom);
-  console.log(user);
+  // const user = useRecoilValue(userAtom);
+  // console.log(user);
   return (
     <>
       {/* {user && <Navbar />} */}
       <Navbar />
       <Router>
         <Routes>
-          <Route
+          {/* <Route
             path="/"
             element={user ? <HomePage /> : <Navigate to="/auth" />}
           />
           <Route
             path="/auth"
             element={!user ? <AuthPage /> : <Navigate to="/" />}
-          />
+          /> */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/book" element={<BookPage />} />
         </Routes>
       </Router>
     </>

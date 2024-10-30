@@ -17,7 +17,7 @@ const Navbar = () => {
   return (
     <Flex
       w={"full"}
-      h={"50px"}
+      h={"65px"}
       bgGradient="linear(to-b, rgba(141, 101, 104, 0.8), rgba(255, 255, 255, 0))"
       justify={"space-between"}
       align={"center"}
