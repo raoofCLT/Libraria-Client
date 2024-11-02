@@ -21,20 +21,18 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const setAuthScreen = useSetRecoilState(authScreenAtom);
   const setUser = useSetRecoilState(userAtom);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [inputs, setInputs] = useState({
     username: "",
     password: "",
   });
-
-
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
   };
 
   const handleLogin = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const res = await fetch("/api/users/login", {
         method: "POST",
@@ -53,8 +51,8 @@ const LoginPage = () => {
       setUser(data);
     } catch (error) {
       console.log("Error in handleLogin:", error);
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -115,8 +113,8 @@ const LoginPage = () => {
               <FormControl isRequired>
                 <Input
                   h={"50px"}
-                  type="username"
-                  placeholder="username"
+                  type="text"
+                  placeholder="Username"
                   bg={"gray.200"}
                   border={0}
                   color={"gray.500"}
@@ -172,7 +170,7 @@ const LoginPage = () => {
               bgGradient="linear(to-r, red.400,pink.400)"
               color={"white"}
               _hover={{
-                bgGradient: "linear(to-r, red.500,pink.500)", // Slightly darker hover effect
+                bgGradient: "linear(to-r, red.500,pink.500)",
                 boxShadow: "xl",
               }}
               type="submit"

@@ -49,8 +49,6 @@ const HomePage = () => {
     };
     getSuggestions();
   }, [setSuggestions, showToast]);
-   console.log(trending)
-   console.log(suggestions)
 
   return (
     <Flex flexDirection={"column"}>

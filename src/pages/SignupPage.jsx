@@ -1,5 +1,4 @@
 import {
-  // Box,
   Button,
   Flex,
   Heading,
@@ -17,11 +16,13 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import authScreenAtom from "../atoms/authScreenAtom";
+import userAtom from "../atoms/userAtom";
 
 const SignupPage = () => {
   const [showPassword,setShowPassword] = useState(false)
 const setAuthScreen = useSetRecoilState(authScreenAtom)
 const [loading, setLoading] = useState(false)
+const setUser = useSetRecoilState(userAtom);
 const [inputs, setInputs] = useState({
   name:"",
   username:"",
@@ -33,7 +34,8 @@ const togglePassword = () => {
   setShowPassword(!showPassword)
 }
 
-  const handleSignup = async () => {
+  const handleSignup = async (e) => {
+    e.preventDefault()
     setLoading(true)
     try {
       const res = await fetch("/api/users/signup", {
@@ -48,8 +50,10 @@ const togglePassword = () => {
         console.log("Error in data:", data.error)
         return;
       }
-      console.log("Signup successful:", data)
-      localStorage.setItem("user-library",JSON.stringify(data))
+      console.log(data)
+      localStorage.setItem("user-library", JSON.stringify(data));
+      setUser(data)
+      // navigate("/");
     } catch (error) {
       console.log("Error in handleSignup:", error);
     }finally{

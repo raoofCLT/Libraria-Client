@@ -11,17 +11,15 @@ import HomePage from "./pages/HomePage";
 import BookPage from "./pages/BookPage";
 import UserPage from "./pages/userPage";
 import Dashboard from "./pages/Dashboard";
-// import Sidebar from "./components/sidebar";
 import AuthPage from "./pages/AuthPage";
+import UpdDltBook from "./pages/UpdDltBook";
 
 function App() {
   const user = useRecoilValue(userAtom);
-  // console.log(user);
+
   return (
     <>
       {user && <Navbar />}
-      {/* <Navbar />
-      <Sidebar/> */}
       <Router>
         <Routes>
           <Route
@@ -33,16 +31,20 @@ function App() {
             element={!user ? <AuthPage /> : <Navigate to="/" />}
           />
           <Route
-            path="/book"
+            path="/book/:id"
             element={user ? <BookPage /> : <Navigate to="/auth" />}
           />
           <Route
-            path="/user"
+            path="/user/:id"
             element={user ? <UserPage /> : <Navigate to="/auth" />}
           />
           <Route
             path="/admin"
-            element={user ? <Dashboard /> : <Navigate to="/auth" />}
+            element={user ? <Dashboard /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/admin/book/:id"
+            element={user ? <UpdDltBook /> : <Navigate to="/" />}
           />
         </Routes>
       </Router>

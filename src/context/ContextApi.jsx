@@ -1,38 +1,38 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
-import userAtom from "../atoms/userAtom";
-import PropTypes from "prop-types";
+// import { createContext, useContext, useEffect, useState } from "react";
+// import { useRecoilValue } from "recoil";
+// import userAtom from "../atoms/userAtom";
+// import PropTypes from "prop-types";
 
 
 
-const AuthContext = createContext();
+// const AuthContext = createContext();
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+// export const useAuth = () => {
+//   return useContext(AuthContext);
+// };
 
-export const AuthProvider = ({ children }) => {
-  const user = useRecoilValue(userAtom); // Accessing user state from Recoil
-  const [onlineUsers, setOnlineUsers] = useState([]); // This can be used for any other user-related info
+// export const AuthProvider = ({ children }) => {
+//   const user = useRecoilValue(userAtom);
 
-  useEffect(() => {
 
-    if (user) {
+//   useEffect(() => {
 
-      console.log("User logged in:", user);
+//     if (user) {
+
+//       console.log("User logged in:", user);
  
-    } else {
-      console.log("No user logged in.");
-    }
-  }, [user]);
+//     } else {
+//       console.log("No user logged in.");
+//     }
+//   }, [user]);
 
-  return (
-    <AuthContext.Provider value={{ user, onlineUsers, setOnlineUsers }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+//   return (
+//     <AuthContext.Provider value={{ user}}>
+//       {children}
+//     </AuthContext.Provider>
+//   );
+// };
 
-AuthProvider.propTypes = {
-    children: PropTypes.node.isRequired,
-  };
+// AuthProvider.propTypes = {
+//     children: PropTypes.node.isRequired,
+//   };
