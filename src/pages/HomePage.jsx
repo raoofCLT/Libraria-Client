@@ -63,7 +63,7 @@ const HomePage = () => {
             <Spinner />
           </Box>
         ) : (
-          <Flex gap={4} justify={"center"} rounded={5} p={4}>
+          <Flex gap={4} wrap={"wrap"} justify={"center"} rounded={5} p={4}>
             {trending.map((book) => (
               <Link key={book._id} to={`/book/${book._id}`}>
                 <Flex w={"150px"}>

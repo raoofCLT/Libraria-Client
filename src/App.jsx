@@ -12,7 +12,8 @@ import BookPage from "./pages/BookPage";
 import UserPage from "./pages/userPage";
 import Dashboard from "./pages/Dashboard";
 import AuthPage from "./pages/AuthPage";
-import UpdDltBook from "./pages/UpdDltBook";
+import UpdateBook from "./pages/UpdateBook";
+import CreateBook from "./pages/CreateBook";
 
 function App() {
   const user = useRecoilValue(userAtom);
@@ -44,7 +45,11 @@ function App() {
           />
           <Route
             path="/admin/book/:id"
-            element={user ? <UpdDltBook /> : <Navigate to="/" />}
+            element={user ? <UpdateBook /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/admin/createbook"
+            element={user ? <CreateBook /> : <Navigate to="/" />}
           />
         </Routes>
       </Router>

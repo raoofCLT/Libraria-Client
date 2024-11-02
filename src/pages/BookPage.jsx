@@ -5,20 +5,23 @@ import {
   Image,
   Text,
   Spinner,
+  IconButton,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useShowToast from "../hooks/useShowToast";
-import { useRecoilValue } from "recoil";
-import userAtom from "../atoms/userAtom";
+// import { useRecoilValue } from "recoil";
+// import userAtom from "../atoms/userAtom";
+import { ChevronLeftIcon } from "@chakra-ui/icons";
+import { useNavigate } from "react-router-dom";
 
 const BookPage = () => {
   const { id: bookId } = useParams();
   const [book, setBook] = useState({});
-  const user = useRecoilValue(userAtom)
+  // const user = useRecoilValue(userAtom);
+  const navigate = useNavigate();
   const showToast = useShowToast();
   const [isLoading, setIsLoading] = useState(true);
-
 
   useEffect(() => {
     const getBook = async () => {
@@ -41,61 +44,31 @@ const BookPage = () => {
     getBook();
   }, [showToast, bookId]);
 
+  const handleCheckIn = async () => {
+    // Only check in functionality
+    try {
+      const res = await fetch(`/api/books/checkin/${bookId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      if (data.error) {
+        showToast("Error", data.error, "error");
+        return;
+      }
 
-  const handleCheckInOut = async () =>{
-    if(book.available){
-
-      //Check In
-      try{
-        const res = await fetch(`/api/books/checkin/${bookId}`,{
-          method: "POST",
-          headers: {
-            "Content-Type":"application/json"
-          }
-        })
-        const data = await res.json();
-        if (data.error) {
-          showToast("Error", data.error, "error");
-          return;
-        }
-        
-        showToast("Success", data.message, "success");
-        setBook((prevBook) => ({ ...prevBook, available: false }));
-      } catch (error) {
-        showToast("Error", error.message, "error");
-      } 
-      //CheckOut
-    }else{
-      try{
-        const dbUser = await fetch(`/api/users/getuser/${user._id}`);
-        if (!user) {
-          showToast("Error", "User not found", "error");
-          return
-        }
-        const userData = await dbUser.json();
-
-        if (userData.currentBooks.includes(bookId)) {
-          const res = await fetch(`/api/books/checkout/${bookId}`,{
-            method: "POST",
-            headers: {
-              "Content-Type":"application/json"
-            }
-          })
-          const data = await res.json();
-          if (data.error) {
-            showToast("Error", data.error, "error");
-            return;
-          }
-          
-          showToast("Success", data.message, "success");
-          setBook((prevBook) => ({ ...prevBook, available: true }));
-        }
-        showToast("Error","Check in this book first","error")
-      } catch (error) {
-        showToast("Error", error.message, "error");
-      } 
+      showToast("Success", data.message, "success");
+      setBook((prevBook) => ({ ...prevBook, available: false, checkedIn: true })); // Update the state to reflect check-in
+    } catch (error) {
+      showToast("Error", error.message, "error");
     }
-  }
+  };
+
+  const handleBack = () => {
+    navigate(-1);
+  };
 
   if (isLoading) {
     return (
@@ -115,6 +88,15 @@ const BookPage = () => {
       gap={8}
       align="center"
     >
+      <IconButton
+        aria-label="Go back"
+        icon={<ChevronLeftIcon />}
+        onClick={handleBack}
+        size="sm"
+        position="absolute"
+        top={75}
+        left={4}
+      />
       <Flex
         w={{ base: "100%", md: "35%" }}
         justify={{ base: "center", md: "right" }}
@@ -132,7 +114,7 @@ const BookPage = () => {
         display="flex"
         flexDirection="column"
         gap={2}
-        align={{base:"center" ,md:"flex-start"}}
+        align={{ base: "center", md: "flex-start" }}
       >
         <Heading size="lg">{book.title}</Heading>
         <Text fontSize="md">Author: {book.author}</Text>
@@ -143,15 +125,20 @@ const BookPage = () => {
         <Text fontSize="md" color={book.available ? "green.500" : "red.500"}>
           {book.available ? "Available" : "Unavailable"}
         </Text>
-        <Button
-          color="white"
-          bg={book.available ? "green.500" : "red.500"}
-          _hover={{ bg: book.available ? "green.600" : "red.400" }}
-          
-          onClick={handleCheckInOut}
-        >
-          {book.available ? "CHECK IN" : "CHECK OUT"}
-        </Button>
+        {book.available ? (
+          <Button
+            color="white"
+            bg="green.500"
+            _hover={{ bg: "green.600" }}
+            onClick={handleCheckIn}
+          >
+            CHECK IN
+          </Button>
+        ) : (
+          <Button color="white" bg="gray.500" isDisabled>
+            Checked In
+          </Button>
+        )}
       </Flex>
     </Flex>
   );
