@@ -6,6 +6,7 @@ import {
   InputGroup,
   InputRightElement,
   Button,
+  IconButton,
 } from "@chakra-ui/react";
 import { IoIosLogOut } from "react-icons/io";
 import { FaRegUserCircle } from "react-icons/fa";
@@ -15,14 +16,25 @@ import userAtom from "../atoms/userAtom.js";
 import { TbLayoutDashboard } from "react-icons/tb";
 import { useEffect, useState } from "react";
 import useShowToast from "../hooks/useShowToast.js";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const { logout, loading } = useLogout();
   const user = useRecoilValue(userAtom);
-  const [fUser,setFUser] = useState("")
-  const showToast = useShowToast()
+  const [fUser, setFUser] = useState("");
+  const showToast = useShowToast();
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
-  useEffect(()=>{
+  const handleSearch = () => {
+    if (searchTerm) {
+      navigate(`/api/books/${searchTerm}`);
+      setSearchTerm("");
+    }
+    console.log("hello")
+  };
+
+  useEffect(() => {
     const getUser = async () => {
       try {
         const userRes = await fetch(`/api/users/getuser/${user._id}`);
@@ -30,6 +42,7 @@ const Navbar = () => {
           showToast("Error", "User not found", "error");
           return;
         }
+        console.log(userRes)
         const userData = await userRes.json();
         setFUser(userData);
       } catch (error) {
@@ -37,7 +50,7 @@ const Navbar = () => {
       }
     };
     getUser();
-  },[showToast,user._id])
+  }, [showToast, user._id]);
 
   return (
     <Flex
@@ -49,54 +62,80 @@ const Navbar = () => {
       p={4}
     >
       <Flex>
-        <a href="/">
+        <Link to={"/"}>
           <Image
             src="https://img.icons8.com/?size=80&id=113798&format=png"
             borderRadius={"50%"}
             objectFit="cover"
             height="40px"
             width="40px"
-             boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
+            boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
           />
-        </a>
+        </Link>
       </Flex>
       <Flex>
         <InputGroup>
           <Input
-            bg="rgb(156, 141, 142)"
             placeholder="Search..."
-            size="sm"
-            mr={2}
-            borderRadius={5}
+            size="md"
+            bg="gray.800"
+            color="gray.200"
             width={{ base: "250px", md: "400px", lg: "500px" }}
             variant="outline"
-             boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
+            borderColor="gray.700"
+            _hover={{ borderColor: "gray.600" }}
+            value={searchTerm} // Bind input value to state
+            onChange={(e) => setSearchTerm(e.target.value)} // Update state on change
+            onKeyPress={(e) => { // Handle enter key press
+              if (e.key === "Enter") {
+                handleSearch();
+              }
+            }}
           />
-          <InputRightElement  pr={"20px"} pb={"7px"}>
-            <Search2Icon  cursor={"pointer"} />
+          <InputRightElement pr="1" pb="1">
+            <IconButton
+              icon={<Search2Icon />}
+              color="gray.300"
+              bg="transparent"
+              aria-label="Search"
+              size="sm"
+              onClick={handleSearch}
+            />
           </InputRightElement>
         </InputGroup>
       </Flex>
       <Flex align={"center"} gap={2}>
-        <a href={`/user/${user._id}`}>
-          <FaRegUserCircle size={"20px"} />
-        </a>
+        {fUser.profilePic ? (
+          <Link to={`/user/${user._id}`}>
+            {
+              <Image
+                w={"25px"}
+                h={"25px"}
+                rounded={"full"}
+                src={fUser.profilePic}
+              />
+            }
+          </Link>
+        ) : (
+          <Link to={`/user/${user._id}`}>
+            <FaRegUserCircle size={"24px"} />
+          </Link>
+        )}
         {fUser?.isAdmin && (
-          <a href={`/admin`}>
-            <TbLayoutDashboard size={"20px"} />
-          </a>
+          <Link to={`/admin`}>
+            <TbLayoutDashboard size={"25px"} />
+          </Link>
         )}
         <Button
           bg="gray.600"
           size={"sm"}
           w={10}
           h={30}
-          variant={"ghost"}
           onClick={logout}
           isLoading={loading}
-           boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
+          boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
         >
-          <IoIosLogOut  />
+          <IoIosLogOut />
         </Button>
       </Flex>
     </Flex>
