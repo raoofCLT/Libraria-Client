@@ -10,15 +10,12 @@ import {
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useShowToast from "../hooks/useShowToast";
-// import { useRecoilValue } from "recoil";
-// import userAtom from "../atoms/userAtom";
 import { ChevronLeftIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 
 const BookPage = () => {
   const { id: bookId } = useParams();
   const [book, setBook] = useState({});
-  // const user = useRecoilValue(userAtom);
   const navigate = useNavigate();
   const showToast = useShowToast();
   const [isLoading, setIsLoading] = useState(true);
@@ -45,13 +42,15 @@ const BookPage = () => {
   }, [showToast, bookId]);
 
   const handleCheckIn = async () => {
-    // Only check in functionality
     try {
       const res = await fetch(`/api/books/checkin/${bookId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ 
+          checkInDate: new Date()
+        }),
       });
       const data = await res.json();
       if (data.error) {
@@ -60,7 +59,7 @@ const BookPage = () => {
       }
 
       showToast("Success", data.message, "success");
-      setBook((prevBook) => ({ ...prevBook, available: false, checkedIn: true })); // Update the state to reflect check-in
+      setBook((prevBook) => ({ ...prevBook, available: false, checkedIn: true, checkInDate: new Date()}));
     } catch (error) {
       showToast("Error", error.message, "error");
     }
@@ -118,8 +117,8 @@ const BookPage = () => {
       >
         <Heading size="lg">{book.title}</Heading>
         <Text fontSize="md">Author: {book.author}</Text>
-        <Text fontSize="md">Released On: {book.publicationDate}</Text>
         <Text fontSize="md">Genre: {book.genre}</Text>
+        <Text fontSize="md">Published On: {book.publicationDate.split("T")[0]}</Text>
         <Text fontSize="md">Location: {book.location}</Text>
         <Text fontSize="md">Bio: {book.bio}</Text>
         <Text fontSize="md" color={book.available ? "green.500" : "red.500"}>
