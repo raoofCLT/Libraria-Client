@@ -28,17 +28,38 @@ const Navbar = () => {
 
   const handleSearch = async () => {
     try {
-      if (searchTerm) {
-        const res = await fetch(`/api/books/searchbook/${searchTerm}`);
-        const data = await res.json();
-        if (data.error) {
-          showToast("Error", data.error, "error");
+      if (!searchTerm) return;
+      const isAdmin = fUser?.isAdmin;
+
+      let res, data;
+
+      if (isAdmin) {
+        res = await fetch(`/api/users/searchuser/${searchTerm}`);
+        data = await res.json();
+
+        if (data.length > 0 && !data.error) {
+          const userId = data[0]._id;
+          navigate(`/admin/user/${userId}`);
+          setSearchTerm("");
           return;
         }
+      }
+      res = await fetch(`/api/books/searchbook/${searchTerm}`);
+      data = await res.json();
+
+      if (data.error) {
+        showToast("Error", data.error, "error");
+        return;
+      }
+
+      if (data.length > 0) {
         const bookId = data[0]._id;
         navigate(`/book/${bookId}`);
-        setSearchTerm("");
+      } else {
+        showToast("Info", "No results found", "info");
       }
+
+      setSearchTerm("");
     } catch (error) {
       showToast("Error", error.message, "error");
     }
