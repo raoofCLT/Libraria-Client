@@ -9,6 +9,7 @@ import {
 import { DeleteIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
 import useShowToast from "../hooks/useShowToast.js";
+import { Link } from "react-router-dom";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -77,6 +78,7 @@ const Users = () => {
                 bg="gray.800"
                 mb={2}
               >
+                  <Link to={`/admin/user/${user._id}`}>
                 <Flex alignItems="center">
                   <Image
                     src={user.profilePic}
@@ -85,9 +87,10 @@ const Users = () => {
                     boxSize="50px"
                     mr={3}
                     boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
-                  />
+                    />
                   <Text fontSize="lg">{user.name}</Text>
                 </Flex>
+                    </Link>
                 <IconButton
                   aria-label="Delete user"
                   icon={<DeleteIcon />}
