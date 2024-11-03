@@ -14,14 +14,15 @@ import Dashboard from "./pages/Dashboard";
 import AuthPage from "./pages/AuthPage";
 import UpdateBook from "./pages/UpdateBook";
 import CreateBook from "./pages/CreateBook";
+import UserAdmin from "./pages/UserAdmin";
 
 function App() {
   const user = useRecoilValue(userAtom);
 
   return (
     <>
-      {user && <Navbar />}
       <Router>
+      {user && <Navbar />}
         <Routes>
           <Route
             path="/"
@@ -50,6 +51,10 @@ function App() {
           <Route
             path="/admin/createbook"
             element={user ? <CreateBook /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/admin/user/:id"
+            element={user ? <UserAdmin /> : <Navigate to="/" />}
           />
         </Routes>
       </Router>

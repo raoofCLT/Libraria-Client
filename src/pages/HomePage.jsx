@@ -1,18 +1,27 @@
-import { Box, Card, CardBody, Flex, Heading, Image, Spinner } from "@chakra-ui/react";
+import {
+  Box,
+  Card,
+  CardBody,
+  Divider,
+  Flex,
+  Heading,
+  Image,
+  Spinner,
+} from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useShowToast from "../hooks/useShowToast";
 
 const HomePage = () => {
   const [trending, setTrending] = useState([]);
-  const [suggestions, setSuggestions] = useState([]);
+  const [books, setBooks] = useState([]);
   const showToast = useShowToast();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [isLoadingBooks, setLoadingBooks] = useState(true);
 
   useEffect(() => {
     const getTrending = async () => {
-      setIsLoading(true);
+      setLoading(true);
       try {
         const res = await fetch("/api/books/trending");
         const data = await res.json();
@@ -24,31 +33,32 @@ const HomePage = () => {
       } catch (error) {
         showToast("Error", error.message, "error");
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
     getTrending();
   }, [setTrending, showToast]);
 
   useEffect(() => {
-    const getSuggestions = async () => {
-      setIsLoadingSuggestions(true);
+    const getBooks = async () => {
+      setLoadingBooks(true);
       try {
-        const res = await fetch("/api/books/suggested");
+        const res = await fetch("/api/books/getbooks");
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");
           return;
         }
-        setSuggestions(data);
+        setBooks(data);
       } catch (error) {
         showToast("Error", error.message, "error");
+        return;
       } finally {
-        setIsLoadingSuggestions(false);
+        setLoadingBooks(false);
       }
     };
-    getSuggestions();
-  }, [setSuggestions, showToast]);
+    getBooks();
+  }, [showToast]);
 
   return (
     <Flex flexDirection={"column"}>
@@ -58,7 +68,7 @@ const HomePage = () => {
             TRENDING BOOKS
           </Heading>
         </Box>
-        {isLoading ? (
+        {loading ? (
           <Box>
             <Spinner />
           </Box>
@@ -91,17 +101,23 @@ const HomePage = () => {
           </Flex>
         )}
       </Flex>
-
+      <Divider
+        borderColor="cyan.300"
+        borderWidth="1px"
+        my={4}
+        width="70%"
+        mx="auto"
+      />
       <Flex wrap={"wrap"} gap={4} justify={"center"} p={4}>
         <Box w={"100%"} m={3} align={"center"}>
-          <Heading size={"md"}>SUGGESTED BOOKS</Heading>
+          <Heading size={"md"}>ALL BOOKS</Heading>
         </Box>
-        {isLoadingSuggestions ? (
+        {isLoadingBooks ? (
           <Box>
             <Spinner />
           </Box>
         ) : (
-          suggestions.map((book) => ( 
+          books.map((book) => (
             <Link key={book._id} to={`/book/${book._id}`}>
               <Card w={"200px"} h={"345px"} boxShadow="lg">
                 <CardBody
