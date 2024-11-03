@@ -26,12 +26,22 @@ const Navbar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
-  const handleSearch = () => {
-    if (searchTerm) {
-      navigate(`/api/books/${searchTerm}`);
-      setSearchTerm("");
+  const handleSearch = async () => {
+    try {
+      if (searchTerm) {
+        const res = await fetch(`/api/books/searchbook/${searchTerm}`);
+        const data = await res.json();
+        if (data.error) {
+          showToast("Error", data.error, "error");
+          return;
+        }
+        const bookId = data[0]._id;
+        navigate(`/book/${bookId}`);
+        setSearchTerm("");
+      }
+    } catch (error) {
+      showToast("Error", error.message, "error");
     }
-    console.log("hello")
   };
 
   useEffect(() => {
@@ -42,7 +52,6 @@ const Navbar = () => {
           showToast("Error", "User not found", "error");
           return;
         }
-        console.log(userRes)
         const userData = await userRes.json();
         setFUser(userData);
       } catch (error) {
@@ -84,9 +93,9 @@ const Navbar = () => {
             variant="outline"
             borderColor="gray.700"
             _hover={{ borderColor: "gray.600" }}
-            value={searchTerm} // Bind input value to state
-            onChange={(e) => setSearchTerm(e.target.value)} // Update state on change
-            onKeyPress={(e) => { // Handle enter key press
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyPress={(e) => {
               if (e.key === "Enter") {
                 handleSearch();
               }

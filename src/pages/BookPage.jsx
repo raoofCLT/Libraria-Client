@@ -20,6 +20,7 @@ const BookPage = () => {
   const showToast = useShowToast();
   const [isLoading, setIsLoading] = useState(true);
 
+// Get Book
   useEffect(() => {
     const getBook = async () => {
       setIsLoading(true);
