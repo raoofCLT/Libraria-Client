@@ -21,6 +21,7 @@ const UserAdmin = () => {
 
   const { id: userId } = useParams();
 
+  //Get User
   useEffect(() => {
     const getUser = async () => {
       setLoading(true);
@@ -41,6 +42,7 @@ const UserAdmin = () => {
     getUser();
   }, [showToast, userId]);
 
+  //Get Books
   useEffect(() => {
     const getBooks = async () => {
       try {
@@ -97,7 +99,7 @@ const UserAdmin = () => {
   return (
     <Box
       p={8}
-      maxW="800px"
+      maxW="70%"
       mx="auto"
       mt={10}
       bgGradient="linear(to-r, gray.900, gray.800)"
@@ -119,11 +121,10 @@ const UserAdmin = () => {
 
       <Stack spacing={2} textAlign="center">
         <Text>
-          <strong>Username:</strong> {user.username}
+          <strong>@</strong>
+          {user.username}
         </Text>
-        <Text>
-          <strong>Email:</strong> {user.email}
-        </Text>
+        <Text>{user.email}</Text>
       </Stack>
 
       <Divider mt={5} />
@@ -185,7 +186,7 @@ const UserAdmin = () => {
           })
         ) : (
           <Text color="gray.400" mt={4}>
-            No books currently checked out.
+            No books currently checked in.
           </Text>
         )}
       </Flex>
