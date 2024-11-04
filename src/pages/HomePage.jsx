@@ -11,6 +11,8 @@ import {
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useShowToast from "../hooks/useShowToast";
+import { useRecoilState } from "recoil";
+import userAtom from "../atoms/userAtom";
 
 const HomePage = () => {
   const [trending, setTrending] = useState([]);
@@ -18,7 +20,27 @@ const HomePage = () => {
   const showToast = useShowToast();
   const [loading, setLoading] = useState(true);
   const [isLoadingBooks, setLoadingBooks] = useState(true);
+  const [user,setUser] = useRecoilState(userAtom);
 
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const res = await fetch(`/api/users/getuser/${user._id}`);
+        const data = await res.json();
+        if (data.error) {
+          showToast("Error", data.error, "error");
+        }
+        setUser(data);
+        localStorage.setItem("user-library", JSON.stringify(data));
+      } catch (error) {
+        showToast("Error", error.message, "error");
+      }
+    };
+    getUser();
+  }, [showToast,user._id,setUser]);
+
+  
+  //Trending Books
   useEffect(() => {
     const getTrending = async () => {
       setLoading(true);
@@ -39,6 +61,7 @@ const HomePage = () => {
     getTrending();
   }, [setTrending, showToast]);
 
+  // All Books
   useEffect(() => {
     const getBooks = async () => {
       setLoadingBooks(true);
