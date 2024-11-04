@@ -4,42 +4,10 @@ import Books from "../components/Books";
 import { useState } from "react";
 import { AddIcon } from "@chakra-ui/icons";
 import {useNavigate } from "react-router-dom";
-// import { useRecoilValue } from "recoil";
-// import userAtom from "../atoms/userAtom";
-// import useShowToast from "../hooks/useShowToast";
-// import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const [book, setBook] = useState(true);
   const navigate = useNavigate()
-  // const [userDetails, setUserDetails] = useState(false);
-  // const user = useRecoilValue(userAtom)
-  // const navigate = useNavigate();
-  // const showToast = useShowToast();
-
-  // useEffect(()=>{
-  //   const getUserDetails = async () => {
-  //     try {
-  //       const userRes = await fetch(`/api/users/getuser/${user._id}`);
-  //       if (!userRes) {
-  //         showToast("Error", "User not found", "error");
-  //         return;
-  //       }
-  //       const userData = await userRes.json();
-  //       setUserDetails(userData);
-  //     } catch (error) {
-  //       showToast("Error", error.message, "error");
-  //     }
-  //   };
-  //   getUserDetails();
-  // },[showToast,user._id])
-
-  // useEffect(() => {
-  //   if (userDetails.isAdmin) {
-  //     navigate('/');
-  //   }
-  // }, [userDetails.isAdmin, navigate]);
-
 
   return (
     <Flex flexDirection={"column"} align={"center"}>
