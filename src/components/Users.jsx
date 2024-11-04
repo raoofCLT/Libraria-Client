@@ -1,11 +1,4 @@
-import {
-  Box,
-  Flex,
-  Image,
-  Text,
-  IconButton,
-  Spinner,
-} from "@chakra-ui/react";
+import { Box, Flex, Image, Text, IconButton, Spinner } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
 import useShowToast from "../hooks/useShowToast.js";
@@ -16,6 +9,7 @@ const Users = () => {
   const showToast = useShowToast();
   const [loading, setLoading] = useState(false);
 
+  // Get All Users
   useEffect(() => {
     const getUsers = async () => {
       setLoading(true);
@@ -78,19 +72,19 @@ const Users = () => {
                 bg="gray.800"
                 mb={2}
               >
-                  <Link to={`/admin/user/${user._id}`}>
-                <Flex alignItems="center">
-                  <Image
-                    src={user.profilePic}
-                    alt={`${user.name}'s avatar`}
-                    rounded="full"
-                    boxSize="50px"
-                    mr={3}
-                    boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
+                <Link to={`/admin/user/${user._id}`}>
+                  <Flex alignItems="center">
+                    <Image
+                      src={user.profilePic}
+                      alt={`${user.name}'s avatar`}
+                      rounded="full"
+                      boxSize="50px"
+                      mr={3}
+                      boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
                     />
-                  <Text fontSize="lg">{user.name}</Text>
-                </Flex>
-                    </Link>
+                    <Text fontSize="lg">{user.name}</Text>
+                  </Flex>
+                </Link>
                 <IconButton
                   aria-label="Delete user"
                   icon={<DeleteIcon />}
