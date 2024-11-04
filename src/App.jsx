@@ -18,11 +18,10 @@ import UserAdmin from "./pages/UserAdmin";
 
 function App() {
   const user = useRecoilValue(userAtom);
-
   return (
     <>
       <Router>
-      {user && <Navbar />}
+        {user && <Navbar />}
         <Routes>
           <Route
             path="/"
@@ -34,27 +33,27 @@ function App() {
           />
           <Route
             path="/book/:id"
-            element={user ? <BookPage /> : <Navigate to="/auth" />}
+            element={user ? <BookPage /> : <Navigate to="/" />}
           />
           <Route
             path="/user/:id"
-            element={user ? <UserPage /> : <Navigate to="/auth" />}
+            element={user ? <UserPage /> : <Navigate to="/" />}
           />
           <Route
             path="/admin"
-            element={user ? <Dashboard /> : <Navigate to="/" />}
+            element={user?.isAdmin ? <Dashboard /> : <Navigate to="/" />}
           />
           <Route
             path="/admin/book/:id"
-            element={user ? <UpdateBook /> : <Navigate to="/" />}
+            element={user?.isAdmin ? <UpdateBook /> : <Navigate to="/" />}
           />
           <Route
             path="/admin/createbook"
-            element={user ? <CreateBook /> : <Navigate to="/" />}
+            element={user?.isAdmin ? <CreateBook /> : <Navigate to="/" />}
           />
           <Route
             path="/admin/user/:id"
-            element={user ? <UserAdmin /> : <Navigate to="/" />}
+            element={user?.isAdmin ? <UserAdmin /> : <Navigate to="/" />}
           />
         </Routes>
       </Router>
