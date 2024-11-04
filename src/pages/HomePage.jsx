@@ -7,6 +7,7 @@ import {
   Heading,
   Image,
   Spinner,
+  Tooltip,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -20,8 +21,9 @@ const HomePage = () => {
   const showToast = useShowToast();
   const [loading, setLoading] = useState(true);
   const [isLoadingBooks, setLoadingBooks] = useState(true);
-  const [user,setUser] = useRecoilState(userAtom);
+  const [user, setUser] = useRecoilState(userAtom);
 
+  //Get User
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -37,9 +39,8 @@ const HomePage = () => {
       }
     };
     getUser();
-  }, [showToast,user._id,setUser]);
+  }, [showToast, user._id, setUser]);
 
-  
   //Trending Books
   useEffect(() => {
     const getTrending = async () => {
@@ -142,7 +143,7 @@ const HomePage = () => {
         ) : (
           books.map((book) => (
             <Link key={book._id} to={`/book/${book._id}`}>
-              <Card w={"200px"} h={"345px"} boxShadow="lg">
+              <Card w={"200px"} h={"340px"} boxShadow="lg">
                 <CardBody
                   transition="transform 0.2s ease"
                   _hover={{ transform: "scale(1.03)" }}
@@ -155,9 +156,11 @@ const HomePage = () => {
                     objectFit="cover"
                     height="250px"
                   />
-                  <Heading size="sm" color={"gray.500"}>
-                    {book.title}
-                  </Heading>
+                  <Tooltip label={book.title}>
+                    <Heading size="sm" color={"gray.500"} isTruncated>
+                      {book.title}
+                    </Heading>
+                  </Tooltip>
                 </CardBody>
               </Card>
             </Link>

@@ -5,6 +5,8 @@ import {
   IconButton,
   Image,
   Spinner,
+  // Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import { MdDeleteOutline } from "react-icons/md";
 import { RxUpdate } from "react-icons/rx";
@@ -17,7 +19,6 @@ const Books = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
   const showToast = useShowToast();
-
 
 // Get Books
   useEffect(() => {
@@ -92,14 +93,18 @@ const Books = () => {
                   h={{ base: "130px", md: "200px" }}
                    boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
                 />
-                <Heading size="xs" color={"gray.500"} mb={2}>
+                <Tooltip label={book.title}>
+                <Heading size="xs" color={"gray.500"} mx={3} isTruncated mb={2}>
                   {book.title}
                 </Heading>
+                </Tooltip>
               </Box>
+              {/* <Text></Text> */}
               <Flex flexDirection={"row"} justify={"space-evenly"}>
               <Link to={`/admin/book/${book._id}`}>
                 <IconButton
                   w={{base:"40px", md:"50px"}}
+                  bg={"green.400"}
                   aria-label="Update Book"
                   borderRadius="10px"
                   mr={2}
@@ -114,6 +119,7 @@ const Books = () => {
                   borderRadius="10px"
                   icon={<MdDeleteOutline />}
                   onClick={()=> handleDelete (book._id)}
+                  isDisabled={!book.available}
                   boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
                 />
               </Flex>

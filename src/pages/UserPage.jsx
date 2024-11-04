@@ -41,10 +41,10 @@ const UserPage = () => {
   const navigate = useNavigate();
   const fileRef = useRef(null);
   const [inputs, setInputs] = useState({
-    name: user.name,
-    profilePic: user.profilePic,
-    username: user.username,
-    email: user.email,
+    name: user?.name,
+    profilePic: user?.profilePic,
+    username: user?.username,
+    email: user?.email,
     password: "",
   });
 
@@ -97,34 +97,43 @@ const UserPage = () => {
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-    if (file) {
+    // console.log(file)
+    if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
+
       reader.onloadend = () => {
         setImageUrl(reader.result);
-        setInputs((prevInputs) => ({
-          ...prevInputs,
-          profilePic: reader.result,
-        }));
       };
+
       reader.readAsDataURL(file);
+      //     setInputs((prevInputs) => ({
+      //       ...prevInputs,
+      //       profilePic: reader.result,
+      //     }));
+    } else {
+      showToast("Invalid file type", "Please select an image file", "error");
+      setImageUrl(null);
     }
   };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    if (!user?._id) {
+      showToast("Error", "User data not loaded", "error");
+      return;
+    }
     setUpdating(true);
     try {
-      const updatedInputs = {
-        ...inputs,
-        profilePic: imageUrl || inputs.profilePic,
-      };
-      const res = await fetch(`/api/users/update/${user._id}`, {
+      const res = await fetch(`/api/users/update/${user?._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedInputs),
+        body: JSON.stringify({
+          ...inputs,
+          profilePic: imageUrl,
+        }),
       });
-
       const data = await res.json();
+      console.log(data);
       if (data.error) {
         showToast("Error", data.error, "error");
         return;
