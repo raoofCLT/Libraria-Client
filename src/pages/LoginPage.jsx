@@ -16,12 +16,14 @@ import { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import authScreenAtom from "../atoms/authScreenAtom";
+import useShowToast from "../hooks/useShowToast";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const setAuthScreen = useSetRecoilState(authScreenAtom);
   const setUser = useSetRecoilState(userAtom);
   const [loading, setLoading] = useState(false);
+  const showToast = useShowToast();
   const [inputs, setInputs] = useState({
     username: "",
     password: "",
@@ -43,14 +45,14 @@ const LoginPage = () => {
       });
       const data = await res.json();
       if (data.error) {
-        console.log("Error in data:", data.error);
+        showToast("Error", data.error, "error");
         return;
       }
       localStorage.setItem("user-library", JSON.stringify(data));
-      console.log("Login successful:", data);
+      showToast("Success", "Login success", "success");
       setUser(data);
     } catch (error) {
-      console.log("Error in handleLogin:", error);
+      showToast("Error", error, "error");
     } finally {
       setLoading(false);
     }

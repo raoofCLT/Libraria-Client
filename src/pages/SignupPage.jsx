@@ -17,47 +17,49 @@ import { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import authScreenAtom from "../atoms/authScreenAtom";
 import userAtom from "../atoms/userAtom";
+import useShowToast from "../hooks/useShowToast";
 
 const SignupPage = () => {
-  const [showPassword,setShowPassword] = useState(false)
-const setAuthScreen = useSetRecoilState(authScreenAtom)
-const [loading, setLoading] = useState(false)
-const setUser = useSetRecoilState(userAtom);
-const [inputs, setInputs] = useState({
-  name:"",
-  username:"",
-  email:"",
-  password: "",
-})
+  const [showPassword, setShowPassword] = useState(false);
+  const setAuthScreen = useSetRecoilState(authScreenAtom);
+  const [loading, setLoading] = useState(false);
+  const setUser = useSetRecoilState(userAtom);
+  const showToast = useShowToast();
+  const [inputs, setInputs] = useState({
+    name: "",
+    username: "",
+    email: "",
+    password: "",
+  });
 
-const togglePassword = () => {
-  setShowPassword(!showPassword)
-}
+  const togglePassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleSignup = async (e) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
     try {
       const res = await fetch("/api/users/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(inputs)
+        body: JSON.stringify(inputs),
       });
-      const data = await res.json()
-      if(data.error){
-        console.log("Error in data:", data.error)
+      const data = await res.json();
+      if (data.error) {
+        showToast("Error", data.error, "error");
         return;
       }
-      console.log(data)
       localStorage.setItem("user-library", JSON.stringify(data));
-      setUser(data)
-      // navigate("/");
+      showToast("Success", "Signup success", "success");
+
+      setUser(data);
     } catch (error) {
-      console.log("Error in handleSignup:", error);
-    }finally{
-      setLoading(false)
+      showToast("Error", error, "error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -124,7 +126,9 @@ const togglePassword = () => {
                       borderColor: "red.400",
                       boxShadow: "0 0 0 1px red.400",
                     }}
-                    onChange={(e)=> setInputs({...inputs,name:e.target.value})}
+                    onChange={(e) =>
+                      setInputs({ ...inputs, name: e.target.value })
+                    }
                     value={inputs.name}
                   />
                 </FormControl>
@@ -142,7 +146,9 @@ const togglePassword = () => {
                       borderColor: "red.400",
                       boxShadow: "0 0 0 1px red.400",
                     }}
-                    onChange={(e)=> setInputs({...inputs,username:e.target.value})}
+                    onChange={(e) =>
+                      setInputs({ ...inputs, username: e.target.value })
+                    }
                     value={inputs.username}
                   />
                 </FormControl>
@@ -161,7 +167,9 @@ const togglePassword = () => {
                     borderColor: "red.400",
                     boxShadow: "0 0 0 1px red.400",
                   }}
-                  onChange={(e)=> setInputs({...inputs,email:e.target.value})}
+                  onChange={(e) =>
+                    setInputs({ ...inputs, email: e.target.value })
+                  }
                   value={inputs.email}
                 />
               </FormControl>
@@ -180,12 +188,18 @@ const togglePassword = () => {
                       borderColor: "red.400",
                       boxShadow: "0 0 0 1px red.400",
                     }}
-                    onChange={(e)=> setInputs({...inputs,password:e.target.value})}
+                    onChange={(e) =>
+                      setInputs({ ...inputs, password: e.target.value })
+                    }
                     value={inputs.password}
                   />
                   <InputRightElement h={"full"}>
                     <Button variant={"ghost"} onClick={togglePassword}>
-                      {showPassword ? <ViewIcon color={"gray"} /> :<ViewOffIcon color={"gray"} />}
+                      {showPassword ? (
+                        <ViewIcon color={"gray"} />
+                      ) : (
+                        <ViewOffIcon color={"gray"} />
+                      )}
                     </Button>
                   </InputRightElement>
                 </InputGroup>
@@ -211,10 +225,7 @@ const togglePassword = () => {
             <Stack pb={2}>
               <Text align={"center"} color={"gray"}>
                 Already a user{" "}
-                <Link
-                  color={"blue.400"}
-                  onClick={() => setAuthScreen("login")}
-                >
+                <Link color={"blue.400"} onClick={() => setAuthScreen("login")}>
                   Login
                 </Link>
               </Text>

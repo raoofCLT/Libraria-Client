@@ -29,6 +29,7 @@ const UpdateBook = () => {
     bio: "",
   });
 
+  //Get Book
   useEffect(() => {
     const getBook = async () => {
       try {
@@ -117,11 +118,7 @@ const UpdateBook = () => {
           m={{ base: 5, md: 2 }}
           align={"center"}
         >
-          <Flex
-            direction="column"
-            flex="1"
-            alignItems="center"
-          >
+          <Flex direction="column" flex="1" alignItems="center">
             <Center m={5}>
               <Image
                 w={{ base: "300px", md: "300px" }}
