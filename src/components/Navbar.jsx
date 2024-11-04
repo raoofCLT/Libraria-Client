@@ -14,14 +14,13 @@ import useLogout from "../hooks/useLogout.js";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom.js";
 import { TbLayoutDashboard } from "react-icons/tb";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useShowToast from "../hooks/useShowToast.js";
 import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const { logout, loading } = useLogout();
   const user = useRecoilValue(userAtom);
-  const [fUser, setFUser] = useState("");
   const showToast = useShowToast();
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
@@ -29,7 +28,7 @@ const Navbar = () => {
   const handleSearch = async () => {
     try {
       if (!searchTerm) return;
-      const isAdmin = fUser?.isAdmin;
+      const isAdmin = user?.isAdmin;
 
       let res, data;
 
@@ -64,23 +63,6 @@ const Navbar = () => {
       showToast("Error", error.message, "error");
     }
   };
-
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const userRes = await fetch(`/api/users/getuser/${user._id}`);
-        if (!userRes) {
-          showToast("Error", "User not found", "error");
-          return;
-        }
-        const userData = await userRes.json();
-        setFUser(userData);
-      } catch (error) {
-        showToast("Error", error.message, "error");
-      }
-    };
-    getUser();
-  }, [showToast, user._id]);
 
   return (
     <Flex
@@ -135,14 +117,14 @@ const Navbar = () => {
         </InputGroup>
       </Flex>
       <Flex align={"center"} gap={2}>
-        {fUser.profilePic ? (
+        {user.profilePic ? (
           <Link to={`/user/${user._id}`}>
             {
               <Image
                 w={"25px"}
                 h={"25px"}
                 rounded={"full"}
-                src={fUser.profilePic}
+                src={user.profilePic}
               />
             }
           </Link>
@@ -151,7 +133,7 @@ const Navbar = () => {
             <FaRegUserCircle size={"24px"} />
           </Link>
         )}
-        {fUser?.isAdmin && (
+        {user?.isAdmin && (
           <Link to={`/admin`}>
             <TbLayoutDashboard size={"25px"} />
           </Link>
