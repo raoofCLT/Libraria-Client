@@ -1,35 +1,41 @@
 import { useSetRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { useState } from "react";
+import useShowToast from "./useShowToast";
+import { useNavigate } from "react-router-dom";
 
 
 
 const useLogout = () => {
     const setUser = useSetRecoilState(userAtom)
     const [loading, setLoading] = useState(false)
+    const navigate = useNavigate()
+    const showToast = useShowToast()
 
   const logout = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const res = await fetch("/api/users/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await res.json();
-      if (data.error) {
-        console.log("Error in data:", data.error);
-      }
-      localStorage.removeItem("user-library");
-      setUser(null)
-      console.log("done");
+        const res = await fetch("/api/users/logout", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        const data = await res.json();
+        if (data.error) {
+            showToast("Error", data.error, "error");
+        } else {
+            localStorage.removeItem("user-library");
+            setUser(null);
+            navigate("/auth");
+            showToast("Success", "Logged out successfully", "success");
+        }
     } catch (error) {
-      console.log("Error in handleLogout:", error.message);
-    }finally{
-      setLoading(false)
+        showToast("Error", error.message, "error");
+    } finally {
+        setLoading(false);
     }
-  };
+};
 
   return {logout, loading};
 };
