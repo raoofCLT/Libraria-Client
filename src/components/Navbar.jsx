@@ -7,6 +7,8 @@ import {
   InputRightElement,
   Button,
   IconButton,
+  Tooltip,
+  Text,
 } from "@chakra-ui/react";
 import { IoIosLogOut } from "react-icons/io";
 import { FaRegUserCircle } from "react-icons/fa";
@@ -14,88 +16,105 @@ import useLogout from "../hooks/useLogout.js";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom.js";
 import { TbLayoutDashboard } from "react-icons/tb";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useShowToast from "../hooks/useShowToast.js";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { debounce } from "../utils/debounce.js"; 
 
 const Navbar = () => {
   const { logout, loading } = useLogout();
   const user = useRecoilValue(userAtom);
   const showToast = useShowToast();
   const [searchTerm, setSearchTerm] = useState("");
-  const navigate = useNavigate();
+  const [searchResults, setSearchResults] = useState([]);
 
   const handleSearch = async () => {
     try {
       if (!searchTerm) return;
-      const isAdmin = user?.isAdmin;
-
-      let res, data;
-
-      if (isAdmin) {
-        res = await fetch(`/api/users/searchuser/${searchTerm}`);
-        data = await res.json();
-
-        if (data.length > 0 && !data.error) {
-          const userId = data[0]._id;
-          navigate(`/admin/user/${userId}`);
-          setSearchTerm("");
-          return;
-        }
-      }
-      res = await fetch(`/api/books/searchbook/${searchTerm}`);
-      data = await res.json();
+      setSearchResults([])
+      console.log(searchTerm)
+      const res = await fetch(`/api/books/searchbook/${searchTerm}`);
+      const data = await res.json();
 
       if (data.error) {
         showToast("Error", data.error, "error");
         return;
       }
 
-      if (data.length > 0) {
-        const bookId = data[0]._id;
-        navigate(`/book/${bookId}`);
-      } else {
-        showToast("Info", "No results found", "info");
-      }
-
-      setSearchTerm("");
+      setSearchResults(data);
     } catch (error) {
       showToast("Error", error.message, "error");
     }
   };
 
+  const debouncedSearch = debounce(async (term) => {
+    if (!term) {
+      setSearchResults([]);
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/books/searchbook/${term}`);
+      const data = await res.json();
+
+      if (data.error) {
+        showToast("Error", data.error, "error");
+        return;
+      }
+
+      setSearchResults(data);
+    } catch (error) {
+      showToast("Error", error.message, "error");
+    }
+  }, 300); 
+  useEffect(() => {
+    
+    debouncedSearch(searchTerm);
+  }, [searchTerm,debouncedSearch]);
+
   return (
     <Flex
-      w={"full"}
-      h={"65px"}
-      bgGradient="linear(to-b, rgba(141, 101, 104, 0.8), rgba(255, 255, 255, 0))"
-      justify={"space-between"}
-      align={"center"}
-      p={4}
+      w="full"
+      h="70px"
+      bg="rgba(48, 48, 48, 0.8)"
+      backdropFilter="blur(8px)"
+      justify="space-between"
+      align="center"
+      px={6}
+      py={4}
+      boxShadow="0 4px 15px rgba(0, 0, 0, 0.3)"
+      borderBottom="1px solid rgba(255, 255, 255, 0.1)"
+      position="sticky"
+      top="0"
+      zIndex="1000"
     >
-      <Flex>
+      <Flex align="center">
         <Link to={"/"}>
           <Image
             src="https://img.icons8.com/?size=80&id=113798&format=png"
-            borderRadius={"50%"}
-            objectFit="cover"
-            height="40px"
-            width="40px"
-            boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
+            borderRadius="50%"
+            height="45px"
+            width="45px"
+            boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3)"
+            transition="transform 0.2s"
+            _hover={{ transform: "scale(1.1)" }}
           />
         </Link>
       </Flex>
-      <Flex>
-        <InputGroup>
+      <Flex flex="1" justify="center" position="relative">
+        <InputGroup maxW="500px" mx={4}>
           <Input
-            placeholder="Search..."
+            placeholder="Search for books..."
             size="md"
-            bg="gray.800"
-            color="gray.200"
-            width={{ base: "250px", md: "400px", lg: "500px" }}
-            variant="outline"
-            borderColor="gray.700"
-            _hover={{ borderColor: "gray.600" }}
+            bg="gray.700"
+            rounded="full"
+            color="whiteAlpha.900"
+            borderColor="transparent"
+            _hover={{ borderColor: "purple.500" }}
+            _focus={{
+              borderColor: "purple.400",
+              boxShadow: "0 0 8px 2px rgba(128, 90, 213, 0.5)",
+            }}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyPress={(e) => {
@@ -103,52 +122,122 @@ const Navbar = () => {
                 handleSearch();
               }
             }}
+            // value={searchTerm}
+            // onChange={(e) => {
+            //   setSearchTerm(e.target.value);
+            //   if (e.target.value === "") {
+            //     setSearchResults([]);
+            //   } else {
+            //     handleSearch();
+            //   }
+            // }}
+            // onKeyPress={(e) => {
+            //   if (e.key === "Enter") {
+            //     handleSearch();
+            //   }
+            // }}
           />
-          <InputRightElement pr="1" pb="1">
+          <InputRightElement pr="2" pb="1">
             <IconButton
               icon={<Search2Icon />}
-              color="gray.300"
+              color="purple.300"
               bg="transparent"
               aria-label="Search"
               size="sm"
+              _hover={{ color: "purple.400", transform: "scale(1.2)" }}
               onClick={handleSearch}
             />
           </InputRightElement>
         </InputGroup>
       </Flex>
-      <Flex align={"center"} gap={2}>
+      <Flex align={"center"} gap={4}>
         {user.profilePic ? (
-          <Link to={`/user/${user._id}`}>
-            {
+          <Tooltip label={user?.name} placement="bottom">
+            <Link to={`/user/${user._id}`}>
               <Image
-                w={"25px"}
-                h={"25px"}
-                rounded={"full"}
+                w="35px"
+                h="35px"
+                rounded="full"
                 src={user.profilePic}
+                boxShadow="0 0 10px rgba(0, 0, 0, 0.2)"
+                transition="transform 0.2s, box-shadow 0.2s"
+                _hover={{
+                  transform: "scale(1.1)",
+                  boxShadow: "0 0 15px rgba(128, 90, 213, 0.4)",
+                }}
               />
-            }
-          </Link>
+            </Link>
+          </Tooltip>
         ) : (
           <Link to={`/user/${user._id}`}>
             <FaRegUserCircle size={"24px"} />
           </Link>
         )}
         {user?.isAdmin && (
-          <Link to={`/admin`}>
-            <TbLayoutDashboard size={"25px"} />
-          </Link>
+          <Tooltip label="Dashboard" placement="bottom">
+            <Link to={"/admin"}>
+              <TbLayoutDashboard
+                size="30px"
+                color="whiteAlpha.900"
+                cursor="pointer"
+                _hover={{
+                  color: "purple.300",
+                  transform: "scale(1.1)",
+                }}
+                transition="transform 0.2s"
+              />
+            </Link>
+          </Tooltip>
         )}
-        <Button
-          bg="gray.600"
-          size={"sm"}
-          w={10}
-          h={30}
-          onClick={logout}
-          isLoading={loading}
-          boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
-        >
-          <IoIosLogOut />
-        </Button>
+        <Tooltip label="Logout" placement="bottom">
+          <Button
+            bg="purple.500"
+            color="white"
+            size="sm"
+            rounded="full"
+            w="35px"
+            h="35px"
+            onClick={logout}
+            isLoading={loading}
+            boxShadow="0px 4px 12px rgba(0, 0, 0, 0.3)"
+            _hover={{ bg: "purple.600", transform: "scale(1.1)" }}
+          >
+            <IoIosLogOut size="20px" />
+          </Button>
+        </Tooltip>
+      </Flex>
+      <Flex
+        top={58}
+        ml={"65px"}
+        position="absolute"
+        width="450px"
+
+        bg="gray.700"
+        zIndex="2000"
+        borderRadius="md"
+        boxShadow="lg"
+        flexDirection={"column"}
+      >
+        {searchResults.length > 0 &&
+          searchResults.map((result) => (
+            <Link key={result._id} to={`/book/${result._id}`}>
+              <Flex alignItems="center" p={2}>
+                <Image
+                  src={
+                    result.coverPage ||
+                    "https://img.icons8.com/?size=80&id=113798&format=png"
+                  }
+                  borderRadius="50%"
+                  w={10}
+                  h={10}
+                  mr={2}
+                />
+                <Text color="white" fontSize="lg">
+                  {result.title}
+                </Text>
+              </Flex>
+            </Link>
+          ))}
       </Flex>
     </Flex>
   );
