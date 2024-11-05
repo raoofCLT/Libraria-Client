@@ -32,8 +32,8 @@ const HomePage = () => {
         if (data.error) {
           showToast("Error", data.error, "error");
         }
+        localStorage.setItem("user-library", JSON.stringify(data))
         setUser(data);
-        localStorage.setItem("user-library", JSON.stringify(data));
       } catch (error) {
         showToast("Error", error.message, "error");
       }

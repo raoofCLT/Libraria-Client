@@ -54,7 +54,6 @@ const SignupPage = () => {
       }
       localStorage.setItem("user-library", JSON.stringify(data));
       showToast("Success", "Signup success", "success");
-
       setUser(data);
     } catch (error) {
       showToast("Error", error, "error");
