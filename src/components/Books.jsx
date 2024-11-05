@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Flex,
   Heading,
   IconButton,
@@ -12,12 +13,14 @@ import { MdDeleteOutline } from "react-icons/md";
 import { RxUpdate } from "react-icons/rx";
 import { useEffect, useState } from "react";
 import useShowToast from "../hooks/useShowToast.js";
-import {Link } from "react-router-dom";
+import {Link, useNavigate } from "react-router-dom";
+import { AddIcon } from "@chakra-ui/icons";
 
 
 const Books = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
   const showToast = useShowToast();
 
 // Get Books
@@ -127,6 +130,17 @@ const Books = () => {
           ))}
         </Flex>
       )}
+            <Box position="fixed" bottom="20px" right="20px"> {/* Set to fixed */}
+        <Button
+          colorScheme="teal"
+          onClick={() => {navigate("/admin/createbook")}}
+          size="lg"
+          borderRadius="full"
+          boxShadow="0px 4px 8px rgba(0, 0, 0, 0.2)"
+        >
+          <AddIcon />
+        </Button>
+      </Box>
     </Flex>
   );
 };
