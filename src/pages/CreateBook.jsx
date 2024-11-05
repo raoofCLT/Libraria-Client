@@ -15,96 +15,101 @@ import { useNavigate } from "react-router-dom";
 import useShowToast from "../hooks/useShowToast";
 
 const CreateBook = () => {
-    const navigate = useNavigate();
-    const [imageUrl, setImageUrl] = useState(null);
-    const [coverUrl, setCoverUrl] = useState("");
-    const [creating, setCreating] = useState(false);
-    const showToast = useShowToast();
-    const [inputs, setInputs] = useState({
-      title: "",
-      author: "",
-      coverPage: "",
-      genre: "",
-      bio: "",
-      publicationDate: "",
-    });
-  
-    const handleImageChange = (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImageUrl(reader.result);
-          setCoverUrl("");
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-  
-    const handleUrlChange = (e) => {
-      setCoverUrl(e.target.value);
+  const navigate = useNavigate();
+  const [imageUrl, setImageUrl] = useState(null);
+  const [coverUrl, setCoverUrl] = useState("");
+  const [creating, setCreating] = useState(false);
+  const showToast = useShowToast();
+  const [inputs, setInputs] = useState({
+    title: "",
+    author: "",
+    coverPage: "",
+    genre: "",
+    bio: "",
+    publicationDate: "",
+  });
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setImageUrl(reader.result);
+        setCoverUrl("");
+      };
+
+      reader.readAsDataURL(file);
+    } else {
+      showToast("Invalid file type", "Please select an image file", "error");
       setImageUrl(null);
-    };
-  
-    const handleCreate = async (e) => {
-      e.preventDefault();
-      setCreating(true);
-  
-      const coverPageValue = coverUrl || imageUrl;
-      if (!coverPageValue) {
-        showToast(
-          "Error",
-          "Please provide a cover image by uploading a file or entering a URL.",
-          "error"
-        );
+    }
+  };
+
+  const handleUrlChange = (e) => {
+    setCoverUrl(e.target.value);
+    setImageUrl(null);
+  };
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    setCreating(true);
+
+    const coverPageValue = coverUrl || imageUrl;
+    if (!coverPageValue) {
+      showToast(
+        "Error",
+        "Please provide a cover image by uploading a file or entering a URL.",
+        "error"
+      );
+      setCreating(false);
+      return;
+    }
+
+    const updatedInputs = { ...inputs, coverPage: coverPageValue };
+    try {
+      const { title, author, publicationDate, genre } = updatedInputs;
+      if (!title || !author || !genre || !publicationDate) {
+        showToast("Error", "Please fill in all required fields.", "error");
         setCreating(false);
         return;
       }
-  
-      const updatedInputs = { ...inputs, coverPage: coverPageValue };
-      try {
-        const { title, author,publicationDate ,genre } = updatedInputs;
-        if (!title || !author || !genre || !publicationDate) {
-          showToast("Error", "Please fill in all required fields.", "error");
-          setCreating(false);
-          return;
-        }
-        const res = await fetch("/api/books/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedInputs),
-        });
-        const data = await res.json();
-        if (data.error) {
-          showToast("Error", data.error, "error");
-          setCreating(false);
-          return;
-        } 
-        showToast("Success", "Book created successfully!", "success");
-
-
-        setInputs({
-          title: "",
-          coverPage: "",
-          author: "",
-          genre: "",
-          publicationDate: "",
-          bio: "",
-        });
-        setImageUrl(null);
-        setCoverUrl("");
-      } catch (error) {
-        showToast("Error", error.message, "error");
-      } finally {
+      const res = await fetch("/api/books/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedInputs),
+      });
+      const data = await res.json();
+      if (data.error) {
+        showToast("Error", data.error, "error");
         setCreating(false);
+        return;
       }
-    };
+      showToast("Success", "Book created successfully!", "success");
 
-    const handleBack = () => {
-        navigate(-1)
+      setInputs({
+        title: "",
+        coverPage: "",
+        author: "",
+        genre: "",
+        publicationDate: "",
+        bio: "",
+      });
+      setImageUrl(null);
+      setCoverUrl("");
+    } catch (error) {
+      showToast("Error", error.message, "error");
+    } finally {
+      setCreating(false);
     }
+  };
+
+  const handleBack = () => {
+    navigate(-1);
+  };
 
   return (
     <Flex m={5} mt={10}>
