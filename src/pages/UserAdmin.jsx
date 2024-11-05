@@ -10,8 +10,10 @@ import {
   Flex,
   Avatar,
   Divider,
+  Tooltip,
 } from "@chakra-ui/react";
 import useShowToast from "../hooks/useShowToast";
+import { differenceInDays } from "date-fns";
 
 const UserAdmin = () => {
   const [user, setUser] = useState(null);
@@ -63,20 +65,19 @@ const UserAdmin = () => {
     getBooks();
   }, [showToast, user]);
 
-  const calculateRemainingDays = (checkInDate) => {
-    if (!checkInDate) return null;
-    const dueDate = new Date(checkInDate);
-    dueDate.setDate(dueDate.getDate() + 10);
-    const now = new Date();
-    const remainingTime = dueDate - now;
-    const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
-
-    if (remainingDays > 0) {
-      return remainingDays;
-    } else if (remainingDays === 0) {
-      return "Due today";
-    } else {
-      return "Overdue";
+  const calculateDays = (checkInDate) => {
+    if (!checkInDate) return "N/A";
+    console.log(checkInDate);
+    try {
+      const daysPassed = differenceInDays(new Date(), new Date(checkInDate));
+      const daysLeft = 10 - daysPassed;
+      return daysLeft > 0
+        ? `Due In: ${daysLeft}d`
+        : daysLeft === 0
+        ? "Due today"
+        : "Overdue";
+    } catch {
+      return "Invalid date";
     }
   };
 
@@ -144,7 +145,7 @@ const UserAdmin = () => {
         {user.currentBooks?.length > 0 ? (
           books.map((book, index) => {
             const checkInDate = user.currentBooks[index]?.checkInDate;
-            const remainingDays = calculateRemainingDays(checkInDate);
+            const remainingDays = calculateDays(checkInDate);
 
             return (
               <Box
@@ -157,7 +158,7 @@ const UserAdmin = () => {
                 boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
                 transition="transform 0.2s ease-in-out"
                 _hover={{ transform: "scale(1.05)" }}
-                bg="gray.800"
+                bg={remainingDays === "Overdue" ? "red.300" : "gray.800"}
               >
                 <Box p={2}>
                   <Image
@@ -168,17 +169,23 @@ const UserAdmin = () => {
                     objectFit="cover"
                     h={{ base: "120px", md: "190px" }}
                   />
-                  <Heading
-                    size="xs"
-                    mb={2}
-                    color="gray.200"
-                    isTruncated
-                    maxWidth="150px"
+                  <Tooltip label={book.title}>
+                    <Heading
+                      size="xs"
+                      mb={2}
+                      color={
+                        remainingDays === "Overdue" ? "gray.200" : "gray.300"
+                      }
+                      isTruncated
+                      maxWidth="150px"
+                    >
+                      {book.title}
+                    </Heading>
+                  </Tooltip>
+                  <Text
+                    color={remainingDays === "Overdue" ? "gray.900" : "red.300"}
                   >
-                    {book.title}
-                  </Heading>
-                  <Text color="red.400">
-                    Due In: {remainingDays !== null ? remainingDays : "N/A"}
+                    {remainingDays}
                   </Text>
                 </Box>
               </Box>

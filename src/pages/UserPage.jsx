@@ -28,7 +28,9 @@ import useShowToast from "../hooks/useShowToast";
 import { useRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { useNavigate } from "react-router-dom";
+import { differenceInDays} from "date-fns";
 import { ViewIcon, ViewOffIcon, ChevronLeftIcon } from "@chakra-ui/icons";
+
 const UserPage = () => {
   const [user, setUser] = useRecoilState(userAtom);
   const [showPassword, setShowPassword] = useState(false);
@@ -68,6 +70,18 @@ const UserPage = () => {
     getCurrentBooks();
   }, [showToast, user]);
 
+  const calculateDays = (checkInDate) => {
+    if (!checkInDate) return "N/A";
+    console.log(checkInDate)
+    try {
+      const daysPassed  = differenceInDays(new Date(), new Date(checkInDate));
+      const daysLeft = 10 - daysPassed;
+      return daysLeft > 0 ? `Due In: ${daysLeft}d` : daysLeft === 0 ? "Due today" : "Overdue";
+    } catch {
+      return "Invalid date";
+    }
+  };
+
   // Read Books
   useEffect(() => {
     const getReadBooks = async () => {
@@ -97,7 +111,7 @@ const UserPage = () => {
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-    // console.log(file)
+
     if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
 
@@ -106,10 +120,6 @@ const UserPage = () => {
       };
 
       reader.readAsDataURL(file);
-      //     setInputs((prevInputs) => ({
-      //       ...prevInputs,
-      //       profilePic: reader.result,
-      //     }));
     } else {
       showToast("Invalid file type", "Please select an image file", "error");
       setImageUrl(null);
@@ -138,9 +148,9 @@ const UserPage = () => {
         showToast("Error", data.error, "error");
         return;
       }
+      localStorage.setItem("user-library", JSON.stringify(data));
       showToast("Success", "Profile updated successfully", "success");
       setUser(data);
-      localStorage.setItem("user-library", JSON.stringify(data));
     } catch (error) {
       showToast("Error", error.message, "error");
     } finally {
@@ -203,63 +213,66 @@ const UserPage = () => {
 
       {/* Current Books */}
 
-      <Flex
-        width={"100%"}
-        p={10}
-        m={5}
-        mt={10}
-        gap={6}
-        justify="center"
-        wrap="wrap"
-      >
+      <Flex width={"100%"} p={10} m={5} mt={10} gap={6} justify="center" wrap="wrap">
         {currentBooks?.length > 0 ? (
-          currentBooks.map((book) => (
-            <Box
-              key={book._id}
-              align="center"
-              h={{ base: 270, md: 370 }}
-              w={{ base: "170px", md: "200px" }}
-              p={{ base: "", md: 2 }}
-              rounded="lg"
-              boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
-              transition="transform 0.2s ease-in-out"
-              _hover={{ transform: "scale(1.05)" }}
-              bg="gray.800"
-            >
-              <Box p={2}>
-                <Image
-                  src={book.coverPage || "https://via.placeholder.com/150"}
-                  alt={book.title || "Book cover"}
-                  borderRadius="md"
-                  mb={2}
-                  objectFit="cover"
-                  h={{ base: "170px", md: "250px" }}
-                />
-                <Tooltip label={book.title}>
-                  <Heading
-                    size="xs"
+          currentBooks.map((book, index) => {
+            const checkInDate = user.currentBooks[index]?.checkInDate;
+            const remainingDays = calculateDays(checkInDate);
+
+            return (
+              <Box
+                key={book._id}
+                align="center"
+                h={{ base: 290, md: 380 }}
+                w={{ base: "170px", md: "200px" }}
+                p={{ base: "", md: 2 }}
+                rounded="lg"
+                boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
+                transition="transform 0.2s ease-in-out"
+                _hover={{ transform: "scale(1.05)" }}
+                bg="gray.800" >
+                <Box p={2}>
+                  <Image
+                    src={book.coverPage || "https://via.placeholder.com/150"}
+                    alt={book.title || "Book cover"}
+                    borderRadius="md"
                     mb={2}
-                    color="gray.300"
-                    isTruncated
-                    maxWidth="150px"
+                    objectFit="cover"
+                    h={{ base: "170px", md: "250px" }}
+                  />
+                  <Tooltip label={book.title}>
+                    <Heading
+                      size="xs"
+                      mb={2}
+                      color="gray.300"
+                      // {remainingDays === "Overdue" ? "gray.200" : "gray.300"}
+                      isTruncated
+                      maxWidth="150px"
+                    >
+                      {book.title}
+                    </Heading>
+                  </Tooltip>
+                  <Text fontSize={"md"} color="red.300"
+                  // {remainingDays === "Overdue" ? "gray.900" : "red.300"}
                   >
-                    {book.title}
-                  </Heading>
-                </Tooltip>
+                    {remainingDays}
+                  </Text>
+                </Box>
+                <Button
+                  mb={2}
+                  mx={2}
+                  bg={remainingDays === "Overdue" ? "red.500" : "gray.700"}
+                 
+                  color={remainingDays === "Overdue" ? "white" : "red.500"}
+                  width={{ base: "85%", md: "92%" }}
+                 _hover={{ bg:remainingDays === "Overdue" ? "red.600" : "gray.600"}}
+                  onClick={() => handleCheckOut(book._id)}
+                >
+                  CHECK OUT
+                </Button>
               </Box>
-              <Button
-                mb={2}
-                mx={2}
-                bg="red.500"
-                color="white"
-                width={{ base: "85%", md: "92%" }}
-                _hover={{ bg: "red.600" }}
-                onClick={() => handleCheckOut(book._id)}
-              >
-                CHECK OUT
-              </Button>
-            </Box>
-          ))
+            );
+          })
         ) : (
           <Flex width="100%" height="300px" justify="center" align="center">
             <Text fontSize="xl" color="gray.500">
@@ -293,7 +306,7 @@ const UserPage = () => {
       >
         {readBooks?.length > 0 ? (
           readBooks.map((book) => (
-            <Box p={2} align={"center"} key={book._id}>
+            <Box p={2} align={"center"}  w={"170px"} key={book._id}>
               <Image
                 src={book.coverPage || "https://via.placeholder.com/150"}
                 alt={book.title || "Book cover"}
