@@ -245,7 +245,6 @@ const UserPage = () => {
                       size="xs"
                       mb={2}
                       color="gray.300"
-                      // {remainingDays === "Overdue" ? "gray.200" : "gray.300"}
                       isTruncated
                       maxWidth="150px"
                     >
@@ -253,7 +252,6 @@ const UserPage = () => {
                     </Heading>
                   </Tooltip>
                   <Text fontSize={"md"} color="red.300"
-                  // {remainingDays === "Overdue" ? "gray.900" : "red.300"}
                   >
                     {remainingDays}
                   </Text>

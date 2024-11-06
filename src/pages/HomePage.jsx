@@ -6,7 +6,7 @@ import {
   Flex,
   Heading,
   Image,
-  Spinner,
+  Skeleton,
   Tooltip,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
@@ -32,7 +32,7 @@ const HomePage = () => {
         if (data.error) {
           showToast("Error", data.error, "error");
         }
-        localStorage.setItem("user-library", JSON.stringify(data))
+        localStorage.setItem("user-library", JSON.stringify(data));
         setUser(data);
       } catch (error) {
         showToast("Error", error.message, "error");
@@ -85,7 +85,7 @@ const HomePage = () => {
   }, [showToast]);
 
   return (
-    <Flex flexDirection={"column"}>
+    <Flex flexDirection={"column"} align={"center"}>
       <Flex wrap={"wrap"} gap={4} mt={2} justify={"center"}>
         <Box w={"100%"} m={3} align={"center"}>
           <Heading size={"md"} color={"gold"}>
@@ -93,9 +93,11 @@ const HomePage = () => {
           </Heading>
         </Box>
         {loading ? (
-          <Box>
-            <Spinner />
-          </Box>
+          <Flex gap={4} wrap={"wrap"} justify={"center"} rounded={5} p={4}>
+            {[0, 1, 2, 3, 4].map((_, index) => (
+              <Skeleton key={index} rounded={5} h={"225px"} w={"150px"} />
+            ))}
+          </Flex>
         ) : (
           <Flex gap={4} wrap={"wrap"} justify={"center"} rounded={5} p={4}>
             {trending.map((book) => (
@@ -132,14 +134,16 @@ const HomePage = () => {
         width="70%"
         mx="auto"
       />
-      <Flex wrap={"wrap"} gap={4} justify={"center"} p={4}>
+      <Flex wrap={"wrap"} gap={4} justify={"center"} width={{base:"100%", md:"70%"}} p={4}>
         <Box w={"100%"} m={3} align={"center"}>
           <Heading size={"md"}>ALL BOOKS</Heading>
         </Box>
         {isLoadingBooks ? (
-          <Box>
-            <Spinner />
-          </Box>
+          <Flex gap={4} wrap={"wrap"} justify={"center"} rounded={5} p={4}>
+            {[0, 1, 2, 3, 4, 5, 6].map((_, index) => (
+              <Skeleton key={index} rounded={5} h={"340px"} w={"200px"} />
+            ))}
+          </Flex>
         ) : (
           books.map((book) => (
             <Link key={book._id} to={`/book/${book._id}`}>
