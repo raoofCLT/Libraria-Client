@@ -40,7 +40,11 @@ function App() {
             element={user ? <UserPage /> : <Navigate to="/" />}
           />
           <Route
-            path="/admin"
+            path="/admin/allusers"
+            element={user?.isAdmin ? <Dashboard /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/admin/allbooks"
             element={user?.isAdmin ? <Dashboard /> : <Navigate to="/" />}
           />
           <Route
