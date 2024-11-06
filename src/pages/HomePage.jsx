@@ -134,7 +134,7 @@ const HomePage = () => {
         width="70%"
         mx="auto"
       />
-      <Flex wrap={"wrap"} gap={4} justify={"center"} width={{base:"100%", md:"70%"}} p={4}>
+      <Flex wrap={"wrap"} gap={4} justify={"center"} width={{base:"100%", md:"69%"}} p={4}>
         <Box w={"100%"} m={3} align={"center"}>
           <Heading size={"md"}>ALL BOOKS</Heading>
         </Box>
