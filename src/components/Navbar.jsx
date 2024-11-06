@@ -119,9 +119,7 @@ const Navbar = () => {
         position="absolute"
         top={"100%"}
         left="50%"
-        // m={10}
         transform="translateX(-50%)"
-        // mt={2}
         flexDirection={"column"}
         width="100%"        
         maxWidth={{base:"300px",md:"700px"}}     

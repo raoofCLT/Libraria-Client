@@ -4,8 +4,8 @@ import {
   Heading,
   Image,
   Text,
-  Spinner,
   IconButton,
+  Skeleton,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -20,7 +20,7 @@ const BookPage = () => {
   const showToast = useShowToast();
   const [isLoading, setIsLoading] = useState(true);
 
-// Get Book
+  // Get Book
   useEffect(() => {
     const getBook = async () => {
       setIsLoading(true);
@@ -49,8 +49,8 @@ const BookPage = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          checkInDate: new Date()
+        body: JSON.stringify({
+          checkInDate: new Date(),
         }),
       });
       const data = await res.json();
@@ -60,7 +60,12 @@ const BookPage = () => {
       }
 
       showToast("Success", data.message, "success");
-      setBook((prevBook) => ({ ...prevBook, available: false, checkedIn: true, checkInDate: new Date()}));
+      setBook((prevBook) => ({
+        ...prevBook,
+        available: false,
+        checkedIn: true,
+        checkInDate: new Date(),
+      }));
     } catch (error) {
       showToast("Error", error.message, "error");
     }
@@ -72,8 +77,30 @@ const BookPage = () => {
 
   if (isLoading) {
     return (
-      <Flex align="center" justify="center" h="100vh">
-        <Spinner size="xl" />
+      <Flex
+        mt={20}
+        h="70%"
+        width="100%"
+        flexDir={{ base: "column", md: "row" }}
+        p={4}
+        gap={8}
+        justify="center"
+        align="center"
+      >
+        <Skeleton rounded={5} h={"450px"} w={"300px"} />
+        <Flex
+          w={{ base: "100%", md: "50%" }}
+          display="flex"
+          flexDirection="column"
+          gap={5}
+          align={{ base: "center", md: "flex-start" }}
+        >
+          <Skeleton rounded={5} h={"50px"} w={"300px"} />
+          {[0, 1, 2, 3, 4].map((_, index) => (
+          <Skeleton key={index} rounded={5} h={"10px"} w={"300px"} />
+          ))}
+          <Skeleton rounded={5} h={"40px"} w={"100px"} />
+        </Flex>
       </Flex>
     );
   }
@@ -119,7 +146,9 @@ const BookPage = () => {
         <Heading size="lg">{book.title}</Heading>
         <Text fontSize="md">Author: {book.author}</Text>
         <Text fontSize="md">Genre: {book.genre}</Text>
-        <Text fontSize="md">Published On: {book.publicationDate.split("T")[0]}</Text>
+        <Text fontSize="md">
+          Published On: {book.publicationDate.split("T")[0]}
+        </Text>
         <Text fontSize="md">Location: {book.location}</Text>
         <Text fontSize="md">Bio: {book.bio}</Text>
         <Text fontSize="md" color={book.available ? "green.500" : "red.500"}>

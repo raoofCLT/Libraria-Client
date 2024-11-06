@@ -94,7 +94,6 @@ const Users = () => {
             boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
             borderRadius="xl"
             bg="gray.700"
-            // flexShrink={0}  // Prevent shrinking so they stay in a row
           >
             <Flex
               alignItems="center"
