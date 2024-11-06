@@ -1,12 +1,9 @@
-import { Search2Icon } from "@chakra-ui/icons";
 import {
   Flex,
   Image,
   Input,
   InputGroup,
-  InputRightElement,
   Button,
-  IconButton,
   Tooltip,
   Text,
 } from "@chakra-ui/react";
@@ -16,61 +13,50 @@ import useLogout from "../hooks/useLogout.js";
 import { useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom.js";
 import { TbLayoutDashboard } from "react-icons/tb";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import useShowToast from "../hooks/useShowToast.js";
-import { Link } from "react-router-dom";
-import { debounce } from "../utils/debounce.js"; 
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   const { logout, loading } = useLogout();
   const user = useRecoilValue(userAtom);
   const showToast = useShowToast();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const location = useLocation();
+  const path = location.pathname;
 
-  const handleSearch = async () => {
-    try {
-      if (!searchTerm) return;
-      setSearchResults([])
-      console.log(searchTerm)
-      const res = await fetch(`/api/books/searchbook/${searchTerm}`);
-      const data = await res.json();
-
-      if (data.error) {
-        showToast("Error", data.error, "error");
+  const handleSearch = useCallback(
+    async (term) => {
+      if (!term) {
+        setSearchResults([]);
         return;
       }
 
-      setSearchResults(data);
-    } catch (error) {
-      showToast("Error", error.message, "error");
-    }
-  };
+      try {
+        const endpoint =
+          path === "/admin/allusers"
+            ? `/api/users/searchuser/${term}`
+            : `/api/books/searchbook/${term}`;
+        const res = await fetch(endpoint);
+        const data = await res.json();
 
-  const debouncedSearch = debounce(async (term) => {
-    if (!term) {
-      setSearchResults([]);
-      return;
-    }
+        if (data.error) {
+          showToast("Error", data.error, "error");
+          return;
+        }
 
-    try {
-      const res = await fetch(`/api/books/searchbook/${term}`);
-      const data = await res.json();
-
-      if (data.error) {
-        showToast("Error", data.error, "error");
-        return;
+        setSearchResults(data);
+      } catch (error) {
+        showToast("Error", error.message, "error");
       }
+    },
+    [path, showToast]
+  );
 
-      setSearchResults(data);
-    } catch (error) {
-      showToast("Error", error.message, "error");
-    }
-  }, 300); 
   useEffect(() => {
-    
-    debouncedSearch(searchTerm);
-  }, [searchTerm,debouncedSearch]);
+    handleSearch(searchTerm);
+  }, [searchTerm, handleSearch]);
 
   return (
     <Flex
@@ -104,7 +90,11 @@ const Navbar = () => {
       <Flex flex="1" justify="center" position="relative">
         <InputGroup maxW="500px" mx={4}>
           <Input
-            placeholder="Search for books..."
+            placeholder={
+              path === "/admin/allusers"
+                ? "Search for users..."
+                : "Search for books..."
+            }
             size="md"
             bg="gray.700"
             rounded="full"
@@ -117,38 +107,69 @@ const Navbar = () => {
             }}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyPress={(e) => {
+            onKeyDown={(e) => {
               if (e.key === "Enter") {
                 handleSearch();
               }
             }}
-            // value={searchTerm}
-            // onChange={(e) => {
-            //   setSearchTerm(e.target.value);
-            //   if (e.target.value === "") {
-            //     setSearchResults([]);
-            //   } else {
-            //     handleSearch();
-            //   }
-            // }}
-            // onKeyPress={(e) => {
-            //   if (e.key === "Enter") {
-            //     handleSearch();
-            //   }
-            // }}
           />
-          <InputRightElement pr="2" pb="1">
-            <IconButton
-              icon={<Search2Icon />}
-              color="purple.300"
-              bg="transparent"
-              aria-label="Search"
-              size="sm"
-              _hover={{ color: "purple.400", transform: "scale(1.2)" }}
-              onClick={handleSearch}
-            />
-          </InputRightElement>
         </InputGroup>
+      </Flex>
+      <Flex
+        position="absolute"
+        top={"100%"}
+        left="50%"
+        // m={10}
+        transform="translateX(-50%)"
+        // mt={2}
+        flexDirection={"column"}
+        width="100%"        
+        maxWidth={{base:"300px",md:"700px"}}     
+        minWidth="50px"     
+        maxHeight="300px"
+        bg="gray.700"
+        zIndex="2000"
+        borderRadius="md"
+        boxShadow="lg"
+        overflowY="auto"
+        overflowX="hidden"
+      >
+        {searchResults.length > 0 &&
+          searchResults.map((result) => (
+            <Link
+              key={result._id}
+              to={
+                path === "/admin/allusers"
+                  ? `/admin/user/${result._id}`
+                  : `/book/${result._id}`
+              }
+              onClick={() => setSearchTerm("")}
+            >
+              <Flex
+                alignItems="center"
+                p={2}
+                rounded={5}
+                _hover={{ bg: "gray.600", transform: "scale(1.01)" }}
+              >
+                <Image
+                  src={
+                    path === "/admin/allusers"
+                      ? result.profilePic ||
+                        "https://img.icons8.com/?size=80&id=113798&format=png"
+                      : result.coverPage ||
+                        "https://img.icons8.com/?size=80&id=113798&format=png"
+                  }
+                  borderRadius="50%"
+                  w={10}
+                  h={10}
+                  mr={2}
+                />
+                <Text color="white" fontSize="lg">
+                  {path === "/admin/allusers" ? result.name : result.title}
+                </Text>
+              </Flex>
+            </Link>
+          ))}
       </Flex>
       <Flex align={"center"} gap={4}>
         {user.profilePic ? (
@@ -175,7 +196,7 @@ const Navbar = () => {
         )}
         {user?.isAdmin && (
           <Tooltip label="Dashboard" placement="bottom">
-            <Link to={"/admin"}>
+            <Link to={"/admin/allusers"}>
               <TbLayoutDashboard
                 size="30px"
                 color="whiteAlpha.900"
@@ -205,39 +226,6 @@ const Navbar = () => {
             <IoIosLogOut size="20px" />
           </Button>
         </Tooltip>
-      </Flex>
-      <Flex
-        top={58}
-        ml={"65px"}
-        position="absolute"
-        width="450px"
-
-        bg="gray.700"
-        zIndex="2000"
-        borderRadius="md"
-        boxShadow="lg"
-        flexDirection={"column"}
-      >
-        {searchResults.length > 0 &&
-          searchResults.map((result) => (
-            <Link key={result._id} to={`/book/${result._id}`}>
-              <Flex alignItems="center" p={2}>
-                <Image
-                  src={
-                    result.coverPage ||
-                    "https://img.icons8.com/?size=80&id=113798&format=png"
-                  }
-                  borderRadius="50%"
-                  w={10}
-                  h={10}
-                  mr={2}
-                />
-                <Text color="white" fontSize="lg">
-                  {result.title}
-                </Text>
-              </Flex>
-            </Link>
-          ))}
       </Flex>
     </Flex>
   );
