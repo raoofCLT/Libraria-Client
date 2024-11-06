@@ -1,4 +1,12 @@
-import { Box, Flex, Image, Text, IconButton, Spinner } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Image,
+  Text,
+  IconButton,
+  Skeleton,
+  SkeletonCircle,
+} from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
 import useShowToast from "../hooks/useShowToast.js";
@@ -55,21 +63,33 @@ const Users = () => {
   };
 
   return (
-    <Flex
-      p={5}
-      wrap="wrap"
-      justify={loading ? "center" : "left"}
-      w="100%"
-      gap={1}
-    >
+    <Flex p={5} wrap="wrap" justify="center" w="100%" gap={1}>
       {loading ? (
-        <Spinner size="xl" />
+        <Flex gap={4} wrap={"wrap"} justify={"center"} rounded={5} p={4}>
+          {[0, 1, 2, 3, 4].map((_, index) => (
+            <Flex
+            key={index}
+            width="280px"
+            height="100px"
+            m={1}
+            p={3}
+            boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
+            borderRadius="xl"
+            bg="gray.700"
+          >
+            <Flex align="center" gap={4} p={2}>
+              <SkeletonCircle size="80px" rounded={"full"} bg="gray.800" />
+              <Skeleton height="10px" width="100px" bg="gray.600" borderRadius="md" />
+            </Flex>
+          </Flex>
+          ))}
+        </Flex>
       ) : (
         users.map((user) => (
           <Box
             key={user._id}
             width="280px"
-             m={1}
+            m={1}
             p={1}
             boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
             borderRadius="xl"
@@ -112,8 +132,6 @@ const Users = () => {
       )}
     </Flex>
   );
-  
-  
 };
 
 export default Users;
