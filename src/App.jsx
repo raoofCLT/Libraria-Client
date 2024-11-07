@@ -9,12 +9,12 @@ import { useRecoilValue } from "recoil";
 import userAtom from "./atoms/userAtom";
 import HomePage from "./pages/HomePage";
 import BookPage from "./pages/BookPage";
-import UserPage from "./pages/userPage";
 import Dashboard from "./pages/Dashboard";
 import AuthPage from "./pages/AuthPage";
 import UpdateBook from "./pages/UpdateBook";
 import CreateBook from "./pages/CreateBook";
 import UserAdmin from "./pages/UserAdmin";
+import UserPage from "./pages/userPage";
 
 function App() {
   const user = useRecoilValue(userAtom);
