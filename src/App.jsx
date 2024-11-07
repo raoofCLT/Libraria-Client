@@ -14,7 +14,7 @@ import AuthPage from "./pages/AuthPage";
 import UpdateBook from "./pages/UpdateBook";
 import CreateBook from "./pages/CreateBook";
 import UserAdmin from "./pages/UserAdmin";
-import UserPage from "./pages/userPage";
+import UserPage from "./pages/userPage.jsx";
 
 function App() {
   const user = useRecoilValue(userAtom);
