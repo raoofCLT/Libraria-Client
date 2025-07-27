@@ -121,6 +121,7 @@ const Users = () => {
                 aria-label="Delete user"
                 icon={<DeleteIcon />}
                 color="red.500"
+                bg={"gray.700"}
                 size="sm"
                 onClick={() => handleDelete(user._id)}
                 boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"

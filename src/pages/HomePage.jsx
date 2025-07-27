@@ -39,7 +39,7 @@ const HomePage = () => {
       }
     };
     getUser();
-  }, [showToast, user._id, setUser]);
+  }, [showToast, user?._id, setUser]);
 
   //Trending Books
   useEffect(() => {
@@ -147,7 +147,7 @@ const HomePage = () => {
         ) : (
           books.map((book) => (
             <Link key={book._id} to={`/book/${book._id}`}>
-              <Card w={"200px"} h={"340px"} boxShadow="lg">
+              <Card w={"200px"} h={"340px"} boxShadow="lg" bg={"gray.700"}>
                 <CardBody
                   transition="transform 0.2s ease"
                   _hover={{ transform: "scale(1.03)" }}
@@ -161,7 +161,7 @@ const HomePage = () => {
                     height="250px"
                   />
                   <Tooltip label={book.title}>
-                    <Heading size="sm" color={"gray.500"} isTruncated>
+                    <Heading size="sm" color={"gray.400"} isTruncated>
                       {book.title}
                     </Heading>
                   </Tooltip>

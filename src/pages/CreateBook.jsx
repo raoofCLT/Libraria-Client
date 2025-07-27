@@ -143,6 +143,7 @@ const CreateBook = () => {
                 <Skeleton
                   w={{ base: "300px", md: "300px" }}
                   height="200px"
+                  bg={"gray.800"}
                   rounded={10}
                 />
               )}
@@ -152,6 +153,9 @@ const CreateBook = () => {
                 w="150px"
                 onClick={() => document.getElementById("file-input").click()}
                 boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
+                bg={"gray.700"}
+                color={"white"}
+                _hover={{ bg: "gray.600" }}
               >
                 Upload Cover
               </Button>
@@ -171,11 +175,11 @@ const CreateBook = () => {
                   h={"50px"}
                   type="text"
                   placeholder="Enter cover image URL"
-                  bg={"gray.200"}
+                  bg={"gray.700"}
                   border={0}
-                  color={"gray.500"}
-                  _placeholder={{ color: "gray.500" }}
-                  _hover={{ bg: "gray.200" }}
+                  color={"gray.200"}
+                  _placeholder={{ color: "gray.400" }}
+                  _hover={{ bg: "gray.600" }}
                   _focus={{
                     borderColor: "blue.400",
                     boxShadow: "0 0 0 1px blue.400",
@@ -189,11 +193,11 @@ const CreateBook = () => {
                   h={"50px"}
                   type="text"
                   placeholder="Title *"
-                  bg={"gray.200"}
+                  bg={"gray.700"}
                   border={0}
-                  color={"gray.500"}
-                  _placeholder={{ color: "gray.500" }}
-                  _hover={{ bg: "gray.200" }}
+                  color={"gray.200"}
+                  _placeholder={{ color: "gray.400" }}
+                  _hover={{ bg: "gray.600" }}
                   _focus={{
                     borderColor: "red.400",
                     boxShadow: "0 0 0 1px red.400",
@@ -209,11 +213,11 @@ const CreateBook = () => {
                   h={"50px"}
                   type="text"
                   placeholder="Author *"
-                  bg={"gray.200"}
+                  bg={"gray.700"}
                   border={0}
-                  color={"gray.500"}
-                  _placeholder={{ color: "gray.500" }}
-                  _hover={{ bg: "gray.200" }}
+                  color={"gray.200"}
+                  _placeholder={{ color: "gray.400" }}
+                  _hover={{ bg: "gray.600" }}
                   _focus={{
                     borderColor: "red.400",
                     boxShadow: "0 0 0 1px red.400",
@@ -229,11 +233,11 @@ const CreateBook = () => {
                   h={"50px"}
                   type="text"
                   placeholder="Genre *"
-                  bg={"gray.200"}
+                  bg={"gray.700"}
                   border={0}
-                  color={"gray.500"}
-                  _placeholder={{ color: "gray.500" }}
-                  _hover={{ bg: "gray.200" }}
+                  color={"gray.200"}
+                  _placeholder={{ color: "gray.400" }}
+                  _hover={{ bg: "gray.600" }}
                   _focus={{
                     borderColor: "red.400",
                     boxShadow: "0 0 0 1px red.400",
@@ -249,11 +253,11 @@ const CreateBook = () => {
                   h={"50px"}
                   type="date"
                   placeholder="Published Date"
-                  bg={"gray.200"}
+                  bg={"gray.700"}
                   border={0}
-                  color={"gray.500"}
-                  _placeholder={{ color: "gray.500" }}
-                  _hover={{ bg: "gray.200" }}
+                  color={"gray.200"}
+                  _placeholder={{ color: "gray.300" }}
+                  _hover={{ bg: "gray.600" }}
                   _focus={{
                     borderColor: "red.400",
                     boxShadow: "0 0 0 1px red.400",
@@ -269,11 +273,11 @@ const CreateBook = () => {
                   h={"50px"}
                   type="text"
                   placeholder="Bio"
-                  bg={"gray.200"}
+                  bg={"gray.700"}
                   border={0}
-                  color={"gray.500"}
-                  _placeholder={{ color: "gray.500" }}
-                  _hover={{ bg: "gray.200" }}
+                  color={"gray.200"}
+                  _placeholder={{ color: "gray.400" }}
+                  _hover={{ bg: "gray.600" }}
                   _focus={{
                     borderColor: "red.400",
                     boxShadow: "0 0 0 1px red.400",

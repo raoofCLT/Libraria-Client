@@ -26,14 +26,18 @@ const Dashboard = () => {
       <Flex gap={2} my={5}>
         <Button
           boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
-          color={user ? "green.500" : ""}
+          bg={"gray.700"}
+          _hover={{ bg: "gray.600" }}
+          color={user ? "green.400" : ""}
           onClick={handleUserClick}
         >
           USERS
         </Button>
         <Button
           boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
-          color={!user ? "green.500" : ""}
+          _hover={{ bg: "gray.600" }}
+          bg={"gray.700"}
+          color={!user ? "green.400" : ""}
           onClick={handleBookClick}
         >
           BOOKS

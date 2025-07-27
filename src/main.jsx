@@ -5,7 +5,16 @@ import App from './App.jsx'
 import { ChakraProvider,extendTheme  } from '@chakra-ui/react'
 import { RecoilRoot } from 'recoil'
 
-const theme = extendTheme({});
+const theme = extendTheme({
+  styles: {
+    global: {
+      body: {
+        bg: '#1a202c', // Dark background
+        color: 'white'
+      }
+    }
+  }
+});
 
 
 createRoot(document.getElementById('root')).render(

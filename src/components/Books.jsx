@@ -131,10 +131,12 @@ const Books = () => {
                 <Link to={`/admin/book/${book._id}`}>
                   <IconButton
                     w={{ base: "40px", md: "50px" }}
-                    bg={"green.400"}
+                    bg={"green.500"}
                     aria-label="Update Book"
                     borderRadius="10px"
                     mr={2}
+                    color={"white"}
+                    _hover={{ bg: "green.600" }}
                     icon={<RxUpdate />}
                     boxShadow="0px 8px 20px rgba(0, 0, 0, 0.3), 0px 4px 10px rgba(0, 0, 0, 0.2)"
                   />
@@ -145,6 +147,8 @@ const Books = () => {
                   bg={"red.500"}
                   aria-label="Delete Book"
                   borderRadius="10px"
+                  color={"white"}
+                  _hover={{ bg: "red.600" }}
                   icon={<MdDeleteOutline />}
                   onClick={() => handleDelete(book._id)}
                   isDisabled={!book.available}

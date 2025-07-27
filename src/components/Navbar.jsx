@@ -170,7 +170,7 @@ const Navbar = () => {
           ))}
       </Flex>
       <Flex align={"center"} gap={4}>
-        {user.profilePic ? (
+        {user?.profilePic ? (
           <Tooltip label={user?.name} placement="bottom">
             <Link to={`/user/${user._id}`}>
               <Image
@@ -188,7 +188,7 @@ const Navbar = () => {
             </Link>
           </Tooltip>
         ) : (
-          <Link to={`/user/${user._id}`}>
+          <Link to={`/user/${user?._id}`}>
             <FaRegUserCircle size={"24px"} />
           </Link>
         )}
@@ -200,7 +200,7 @@ const Navbar = () => {
                 color="whiteAlpha.900"
                 cursor="pointer"
                 _hover={{
-                  color: "purple.300",
+                  color: "purple.400",
                   transform: "scale(1.1)",
                 }}
                 transition="transform 0.2s"
@@ -210,7 +210,7 @@ const Navbar = () => {
         )}
         <Tooltip label="Logout" placement="bottom">
           <Button
-            bg="purple.500"
+            bg="gray.700"
             color="white"
             size="sm"
             rounded="full"
@@ -219,9 +219,9 @@ const Navbar = () => {
             onClick={logout}
             isLoading={loading}
             boxShadow="0px 4px 12px rgba(0, 0, 0, 0.3)"
-            _hover={{ bg: "purple.600", transform: "scale(1.1)" }}
+            _hover={{ bg: "gray.600", transform: "scale(1.1)" }}
           >
-            <IoIosLogOut size="20px" />
+            <IoIosLogOut size="25px" />
           </Button>
         </Tooltip>
       </Flex>

@@ -339,7 +339,7 @@ import {
         {/* Profile Udpdate */}
   
         <Flex position={"absolute"} mt={4} right={0} mr={3}>
-          <Button onClick={() => setIsModalOpen(true)}>Update Profile</Button>
+          <Button bg={"gray.700"} color={"white"} _hover={{ bg: "gray.600" }} onClick={() => setIsModalOpen(true)}>Update Profile</Button>
         </Flex>
   
         <Modal
@@ -348,18 +348,18 @@ import {
           isCentered
         >
           <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Profile Edit</ModalHeader>
+          <ModalContent bg={"gray.800"}>
+            <ModalHeader color={"gray.200"} >Profile Edit</ModalHeader>
             <ModalCloseButton />
             <form onSubmit={handleUpdate}>
               <ModalBody>
                 <FormControl mb={4}>
                   <Stack direction={["column", "row"]} spacing={6}>
-                    <Center mb={1}>
+                    <Center bg={"gray.300"} rounded={"full"} p={0.5} mb={1}>
                       <Avatar size="xl" src={imageUrl || user.profilePic} />
                     </Center>
                     <Center w="full">
-                      <Button w="full" onClick={() => fileRef.current.click()}>
+                      <Button w="full" onClick={() => fileRef.current.click()} bg={"gray.700"} color={"white"} _hover={{ bg: "gray.600" }}>
                         Change Avatar
                       </Button>
                       <Input
@@ -376,6 +376,14 @@ import {
                     type="text"
                     placeholder="Name"
                     value={inputs.name}
+                    bg={"gray.700"}
+                    color={"gray.200"}
+                    _placeholder={{ color: "gray.400" }}
+                    _hover={{ bg: "gray.600" }}
+                    _focus={{
+                      borderColor: "red.400",
+                      boxShadow: "0 0 0 1px red.400",
+                    }}
                     onChange={(e) =>
                       setInputs({ ...inputs, name: e.target.value })
                     }
@@ -387,6 +395,14 @@ import {
                     type="text"
                     placeholder="Username"
                     value={inputs.username}
+                    bg={"gray.700"}
+                    color={"gray.200"}
+                    _placeholder={{ color: "gray.400" }}
+                    _hover={{ bg: "gray.600" }}
+                    _focus={{
+                      borderColor: "red.400",
+                      boxShadow: "0 0 0 1px red.400",
+                    }}
                     onChange={(e) =>
                       setInputs({ ...inputs, username: e.target.value })
                     }
@@ -398,6 +414,14 @@ import {
                     type="email"
                     placeholder="Email"
                     value={inputs.email}
+                    bg={"gray.700"}
+                    color={"gray.200"}
+                    _placeholder={{ color: "gray.400" }}
+                    _hover={{ bg: "gray.600" }}
+                    _focus={{
+                      borderColor: "red.400",
+                      boxShadow: "0 0 0 1px red.400",
+                    }}
                     onChange={(e) =>
                       setInputs({ ...inputs, email: e.target.value })
                     }
@@ -410,12 +434,20 @@ import {
                       type={showPassword ? "text" : "password"}
                       placeholder="Password"
                       value={inputs.password}
+                      bg={"gray.700"}
+                      color={"gray.200"}
+                      _placeholder={{ color: "gray.400" }}
+                      _hover={{ bg: "gray.600" }}
+                      _focus={{
+                        borderColor: "red.400",
+                        boxShadow: "0 0 0 1px red.400",
+                      }}
                       onChange={(e) =>
                         setInputs({ ...inputs, password: e.target.value })
                       }
                     />
                     <InputRightElement>
-                      <Button variant="ghost" onClick={togglePassword}>
+                      <Button variant="ghost" onClick={togglePassword} color={"white"} _hover={{ bg: "gray.700" }}>
                         {showPassword ? <ViewIcon /> : <ViewOffIcon />}
                       </Button>
                     </InputRightElement>
@@ -423,7 +455,7 @@ import {
                 </FormControl>
               </ModalBody>
               <ModalFooter>
-                <Button colorScheme="blue" type="submit" isLoading={updating}>
+                <Button bg={"gray.700"} color={"white"} _hover={{ bg: "gray.600" }} type="submit" isLoading={updating}>
                   Update
                 </Button>
               </ModalFooter>
